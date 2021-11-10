@@ -15,4 +15,10 @@
     <PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\" />
+    <Folder Include="wwwroot\lib\" />
+    <Folder Include="wwwroot\media\" />
+  </ItemGroup>
+
 </Project>
