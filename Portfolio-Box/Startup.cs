@@ -25,6 +25,8 @@ namespace Portfolio_Box
             // Register our own services 
             services.AddDbContext<AppDBContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             services.AddHttpContextAccessor();
+            services.AddSingleton(Configuration);
+            services.AddScoped<Cookie>();
             services.AddScoped(user => User.GetUser(user));
             // Register framework services
             services.AddControllersWithViews();
@@ -35,7 +37,7 @@ namespace Portfolio_Box
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             
-            app.UsePathBase(new PathString("/krenier"));
+            app.UsePathBase(new PathString(Configuration.GetValue<string>("Hosting:BasePath")));
 
             if (env.IsDevelopment())
             {

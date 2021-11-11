@@ -20,5 +20,11 @@ namespace Portfolio_Box.Models
         {
             return ctx.Tokens.FirstOrDefault(t => t.AccessToken == token);
         }
+
+        public static string ExtractAccessToken(string token)
+        {
+            if (string.IsNullOrEmpty(token) || !token.Contains('.')) return string.Empty;
+            return token.Split('.')[0].Substring(2);
+        }
     }
 }

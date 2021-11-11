@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Portfolio_Box.Models;
 using Portfolio_Box.Models.User;
@@ -10,17 +11,19 @@ namespace Portfolio_Box.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly User _user;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, User user)
+        public HomeController(ILogger<HomeController> logger, User user, IConfiguration configuration)
         {
             _logger = logger;
             _user = user;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
         {
             if (_user is AnonymousUser)
-                return Redirect("https://google.com");
+                return Redirect(_configuration.GetValue<string>("Hosting:Redirect"));
             return View();
         }
 
