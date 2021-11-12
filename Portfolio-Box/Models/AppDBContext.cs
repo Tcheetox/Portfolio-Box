@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Portfolio_Box.Models.Files;
 using Portfolio_Box.Models.User;
 
 namespace Portfolio_Box.Models
 {
     public class AppDBContext : DbContext
     {
-
         public DbSet<AuthorizedUser> Users { get; set; }
-
         public DbSet<Token> Tokens { get; set; }
+        public DbSet<SharedFile> Files { get; set; }
+        public DbSet<SharedLink> Links { get; set; }
 
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
