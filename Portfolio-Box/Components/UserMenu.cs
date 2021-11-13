@@ -3,10 +3,10 @@ using Portfolio_Box.Models.User;
 
 namespace Portfolio_Box.Components
 {
-    public class UserNickname : ViewComponent
+    public class UserMenu : ViewComponent
     {
         private readonly User _user;
-        public UserNickname(User user)
+        public UserMenu(User user)
         {
             _user = user;
         }

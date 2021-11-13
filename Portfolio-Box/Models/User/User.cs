@@ -6,7 +6,7 @@ using Portfolio_Box.Models.Shared;
 
 namespace Portfolio_Box.Models.User
 {
-    [NotMapped]
+    [Table("users")]
     public abstract class User
     {
         public abstract string Nickname { get; set; }

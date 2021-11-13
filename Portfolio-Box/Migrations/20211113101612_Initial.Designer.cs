@@ -9,7 +9,7 @@ using Portfolio_Box.Models;
 namespace Portfolio_Box.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20211113093400_Initial")]
+    [Migration("20211113101612_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,9 +28,6 @@ namespace Portfolio_Box.Migrations
                     b.Property<string>("Author")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("AuthorizedUserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Path")
                         .IsRequired()
@@ -51,7 +48,7 @@ namespace Portfolio_Box.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorizedUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Files");
                 });
@@ -90,20 +87,24 @@ namespace Portfolio_Box.Migrations
                         .HasColumnName("access_token")
                         .HasColumnType("text");
 
-                    b.Property<uint>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnName("user_id")
-                        .HasColumnType("int unsigned");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("oauth_tokens");
                 });
 
-            modelBuilder.Entity("Portfolio_Box.Models.User.AuthorizedUser", b =>
+            modelBuilder.Entity("Portfolio_Box.Models.User.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -116,13 +117,26 @@ namespace Portfolio_Box.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                });
+
+            modelBuilder.Entity("Portfolio_Box.Models.User.AuthorizedUser", b =>
+                {
+                    b.HasBaseType("Portfolio_Box.Models.User.User");
+
+                    b.ToTable("users");
+
+                    b.HasDiscriminator().HasValue("AuthorizedUser");
                 });
 
             modelBuilder.Entity("Portfolio_Box.Models.Shared.SharedFile", b =>
                 {
-                    b.HasOne("Portfolio_Box.Models.User.AuthorizedUser", null)
+                    b.HasOne("Portfolio_Box.Models.User.User", null)
                         .WithMany("Files")
-                        .HasForeignKey("AuthorizedUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Portfolio_Box.Models.Shared.SharedLink", b =>

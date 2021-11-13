@@ -27,9 +27,6 @@ namespace Portfolio_Box.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("AuthorizedUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("text");
@@ -49,7 +46,7 @@ namespace Portfolio_Box.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorizedUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Files");
                 });
@@ -88,20 +85,24 @@ namespace Portfolio_Box.Migrations
                         .HasColumnName("access_token")
                         .HasColumnType("text");
 
-                    b.Property<uint>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnName("user_id")
-                        .HasColumnType("int unsigned");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("oauth_tokens");
                 });
 
-            modelBuilder.Entity("Portfolio_Box.Models.User.AuthorizedUser", b =>
+            modelBuilder.Entity("Portfolio_Box.Models.User.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -114,13 +115,26 @@ namespace Portfolio_Box.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                });
+
+            modelBuilder.Entity("Portfolio_Box.Models.User.AuthorizedUser", b =>
+                {
+                    b.HasBaseType("Portfolio_Box.Models.User.User");
+
+                    b.ToTable("users");
+
+                    b.HasDiscriminator().HasValue("AuthorizedUser");
                 });
 
             modelBuilder.Entity("Portfolio_Box.Models.Shared.SharedFile", b =>
                 {
-                    b.HasOne("Portfolio_Box.Models.User.AuthorizedUser", null)
+                    b.HasOne("Portfolio_Box.Models.User.User", null)
                         .WithMany("Files")
-                        .HasForeignKey("AuthorizedUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Portfolio_Box.Models.Shared.SharedLink", b =>

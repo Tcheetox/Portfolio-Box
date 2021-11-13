@@ -19,18 +19,17 @@ namespace Portfolio_Box.Migrations
                     Path = table.Column<string>(nullable: false),
                     Author = table.Column<string>(nullable: false),
                     Size = table.Column<double>(nullable: false),
-                    UploadedOn = table.Column<DateTime>(nullable: false),
-                    AuthorizedUserId = table.Column<int>(nullable: true)
+                    UploadedOn = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Files", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Files_users_AuthorizedUserId",
-                        column: x => x.AuthorizedUserId,
+                        name: "FK_Files_users_UserId",
+                        column: x => x.UserId,
                         principalTable: "users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,9 +54,9 @@ namespace Portfolio_Box.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Files_AuthorizedUserId",
+                name: "IX_Files_UserId",
                 table: "Files",
-                column: "AuthorizedUserId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Links_SharedFileId",

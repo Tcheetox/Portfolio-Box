@@ -11,7 +11,7 @@ namespace Portfolio_Box.Models
         public int Id { get; private set; }
 
         [Column("user_id")]
-        public uint UserId { get; private set; }
+        public int UserId { get; private set; }
 
         [Column("access_token")]
         public string AccessToken { get; private set; }

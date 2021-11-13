@@ -6,7 +6,7 @@ namespace Portfolio_Box.Models
 {
     public class AppDBContext : DbContext
     {
-        public DbSet<AuthorizedUser> Users { get; set; }
+        public DbSet<User.User> Users { get; set; }
         public DbSet<Token> Tokens { get; set; }
         public DbSet<SharedFile> Files { get; set; }
         public DbSet<SharedLink> Links { get; set; }
@@ -19,6 +19,7 @@ namespace Portfolio_Box.Models
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<AuthorizedUser>();
+            builder.Entity<AnonymousUser>();
 
             base.OnModelCreating(builder);
         }

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Portfolio_Box.Models.User
 {
-    [NotMapped]
     public class AnonymousUser : User
     {
         public override string Nickname { get; set; } = "Anonymous";
