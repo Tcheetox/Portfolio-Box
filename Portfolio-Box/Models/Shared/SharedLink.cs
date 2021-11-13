@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Portfolio_Box.Models.Files
+namespace Portfolio_Box.Models.Shared
 {
     public class SharedLink
     {

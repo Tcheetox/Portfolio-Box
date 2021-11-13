@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Portfolio_Box.Models;
+using Portfolio_Box.Models.Shared;
 using Portfolio_Box.Models.User;
 
 namespace Portfolio_Box
@@ -28,6 +29,7 @@ namespace Portfolio_Box
             services.AddSingleton(Configuration);
             services.AddScoped<Cookie>();
             services.AddScoped(user => User.GetUser(user));
+            services.AddScoped<ISharedFileRepository, SharedFileRepository>();
             // Register framework services
             services.AddControllersWithViews();
             services.AddRazorPages();

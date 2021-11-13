@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Portfolio_Box.Models.Files
+namespace Portfolio_Box.Models.Shared
 {
     public interface ISharedFileRepository
     {

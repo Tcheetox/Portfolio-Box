@@ -1,10 +1,17 @@
-﻿using Portfolio_Box.Models.Files;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Portfolio_Box.Models.Shared
 {
     public class SharedLinkRepository : ISharedLinkRepository
     {
-        public IEnumerable<SharedLink> AllLinks { get; }
+        private readonly AppDBContext _appDBContext;
+        public SharedLinkRepository(AppDBContext appDBContext)
+        {
+            _appDBContext = appDBContext;
+        }
+
+        // TODO: check!
+        public IEnumerable<SharedLink> AllLinks => _appDBContext.Links;
     }
 }

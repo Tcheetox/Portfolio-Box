@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Portfolio_Box.Models;
+using Portfolio_Box.Models.Shared;
 using Portfolio_Box.Models.User;
+using Portfolio_Box.ViewModels;
 using System.Diagnostics;
 
 namespace Portfolio_Box.Controllers
@@ -12,25 +13,23 @@ namespace Portfolio_Box.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly User _user;
         private readonly IConfiguration _configuration;
+        private readonly ISharedFileRepository _sharedFileRepository;
 
-        public HomeController(ILogger<HomeController> logger, User user, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, User user, ISharedFileRepository sharedFileRepository, IConfiguration configuration)
         {
             _logger = logger;
             _user = user;
+            _sharedFileRepository = sharedFileRepository; ;
             _configuration = configuration;
         }
 
         public IActionResult Index()
         {
-            if (_user is AnonymousUser)
-                return Redirect(_configuration.GetValue<string>("Hosting:Redirect"));
-            return View();
+            //if (_user is AnonymousUser)
+               // return Redirect(_configuration.GetValue<string>("Hosting:Redirect"));
+            return View(_sharedFileRepository);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
