@@ -27,7 +27,7 @@ namespace Portfolio_Box
             services.AddDbContext<AppDBContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             services.AddHttpContextAccessor();
             services.AddSingleton(Configuration);
-            services.AddScoped<Cookie>();
+            services.AddScoped<CookieHandler>();
             services.AddScoped(user => User.GetUser(user));
             services.AddScoped<ISharedFileRepository, SharedFileRepository>();
             // Register framework services
@@ -43,8 +43,8 @@ namespace Portfolio_Box
 
             if (env.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();
-                app.UseExceptionHandler("/Home/Error");
+                app.UseDeveloperExceptionPage();
+                //app.UseExceptionHandler("/Home/Error");
             }
 
             app.UseHttpsRedirection();

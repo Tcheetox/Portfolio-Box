@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Portfolio_Box.Models.Shared;
 
@@ -14,16 +15,13 @@ namespace Portfolio_Box.Models.User
         public abstract int Id { get; set; }
         public abstract List<SharedFile> Files { get; set; }
 
-        public abstract void Logout();
-
         public static User GetUser(IServiceProvider serviceProvider)
         {
-            if (!serviceProvider.GetRequiredService<Cookie>().TryGetCookie(out var cookie))
+            if (!serviceProvider.GetRequiredService<CookieHandler>().TryGetCookie(out var cookie))
                 return new AnonymousUser();
 
             var ctx = serviceProvider.GetService<AppDBContext>();
-            var accessToken = Token.ExtractAccessToken(cookie.Value);
-            var token = Token.FindByAccessToken(ctx, accessToken);
+            var token = Token.FindByAccessToken(ctx, Token.ExtractAccessToken(cookie.Value));
             if (token == null) return new AnonymousUser();
 
             var user = ctx.Users.Find(token.UserId);

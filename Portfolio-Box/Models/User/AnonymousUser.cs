@@ -1,6 +1,7 @@
-﻿using Portfolio_Box.Models.Shared;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Extensions.Configuration;
+using Portfolio_Box.Models.Shared;
 
 namespace Portfolio_Box.Models.User
 {
@@ -10,10 +11,5 @@ namespace Portfolio_Box.Models.User
         public override string Email { get; set; } = "Anonymous";
         public override int Id { get; set; } = -1;
         public override List<SharedFile> Files { get; set; } = new List<SharedFile>();
-
-        public override void Logout()
-        {
-            // Null user cannot logout
-        }
     }
 }

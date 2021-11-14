@@ -11,7 +11,11 @@ namespace Portfolio_Box.Models.Shared
             _appDBContext = appDBContext;
         }
 
-        // TODO: check!
-        public IEnumerable<SharedLink> AllLinks => _appDBContext.Links;
+        public IEnumerable<SharedLink> GetSharedLinksByFileId(int id)
+        {
+            return from l in _appDBContext.Links
+                   where l.SharedFileId == id
+                   select l;
+        }
     }
 }

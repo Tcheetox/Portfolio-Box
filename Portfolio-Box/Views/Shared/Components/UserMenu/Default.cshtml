@@ -1,4 +1,13 @@
 ﻿@model User
 <div class="nickname">
+    <a asp-controller="Home" asp-action="Dashboard">
     @Model.Nickname
+    </a>
 </div>
+
+@if (Model is AuthorizedUser)
+{
+    <form class="logout" method="post">
+        <button asp-controller="Home" asp-action="Disconnect" class="btn btn-primary">Logout</button>
+    </form>
+}
