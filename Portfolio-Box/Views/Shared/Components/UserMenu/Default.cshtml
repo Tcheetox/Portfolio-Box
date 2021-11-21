@@ -1,4 +1,32 @@
 ﻿@model User
+
+@if (Model is AuthorizedUser)
+{
+    <button type="button" id="uploadButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+      Upload
+    </button>
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="UploadFile" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="uploadForm" class="upload" enctype="multipart/form-data" method="post" action="drop2vlar/file/upload" onsubmit="AJAXSubmit(this);return false;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="UploadFile">Choose a file</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="file" name="file" type="file" class="form-control">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
+                    </div>
+                    <output form="uploadForm" name="result"></output>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
 <div class="nickname">
     <a asp-controller="Home" asp-action="Dashboard">
     @Model.Nickname
@@ -11,3 +39,33 @@
         <button asp-controller="Home" asp-action="Disconnect" class="btn btn-primary">Logout</button>
     </form>
 }
+
+
+<script>
+    "use strict";
+
+    async function AJAXSubmit (oFormElement) {
+        const formData = new FormData(oFormElement);
+        try {
+            $("#uploadButton").prop("disabled", true);
+            const response = await fetch(oFormElement.action, {
+                method: 'POST',
+                headers: {
+                'RequestVerificationToken': getCookie('RequestVerificationToken')
+                },
+                body: formData
+            });
+            oFormElement.elements.namedItem("result").value = 'Result: ' + response.status + ' ' + response.statusText;
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            $("#uploadButton").prop("disabled", false);
+        }
+    }
+
+    function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+</script>

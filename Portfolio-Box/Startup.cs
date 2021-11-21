@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Portfolio_Box.Attributes;
 using Portfolio_Box.Models;
 using Portfolio_Box.Models.Shared;
 using Portfolio_Box.Models.User;
@@ -32,19 +35,30 @@ namespace Portfolio_Box
             services.AddScoped<ISharedFileRepository, SharedFileRepository>();
             // Register framework services
             services.AddControllersWithViews();
-            services.AddRazorPages();
+
+            // TODO: config
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = int.MaxValue; // if don't set default value is: 30 MB
+            });
+
+            services.AddRazorPages(options => {
+                options.Conventions.AddPageApplicationModelConvention("/FileUpload",model => {
+                   model.Filters.Add(new GenerateAntiforgeryTokenCookieAttribute());
+                   model.Filters.Add(new DisableFormValueModelBindingAttribute());
+               });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
             app.UsePathBase(new PathString(Configuration.GetValue<string>("Hosting:BasePath")));
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseExceptionHandler("/Home/Error");
+                // else => ??? app.UseExceptionHandler("/Home/Error");
             }
 
             app.UseHttpsRedirection();
@@ -53,9 +67,7 @@ namespace Portfolio_Box
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id:int?}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
