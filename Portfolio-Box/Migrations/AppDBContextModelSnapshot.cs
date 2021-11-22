@@ -23,18 +23,14 @@ namespace Portfolio_Box.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Author")
+                    b.Property<string>("DiskPath")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<long>("Length")
+                        .HasColumnType("bigint");
 
-                    b.Property<double>("Size")
-                        .HasColumnType("double");
-
-                    b.Property<string>("Title")
+                    b.Property<string>("OriginalName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -117,6 +113,15 @@ namespace Portfolio_Box.Migrations
                     b.ToTable("users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                });
+
+            modelBuilder.Entity("Portfolio_Box.Models.User.AnonymousUser", b =>
+                {
+                    b.HasBaseType("Portfolio_Box.Models.User.User");
+
+                    b.ToTable("users");
+
+                    b.HasDiscriminator().HasValue("AnonymousUser");
                 });
 
             modelBuilder.Entity("Portfolio_Box.Models.User.AuthorizedUser", b =>

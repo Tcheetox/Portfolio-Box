@@ -8,16 +8,20 @@ namespace Portfolio_Box.Models.Shared
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string Path { get; set; }
-        public string Author { get; set; }
-        public double Size { get; set; }
+        public string DiskPath { get; set; }
+        public string OriginalName { get; set; }
+        public long Length { get; set; }
         public DateTime UploadedOn { get; set; }
         public List<SharedLink> Links { get; set; }
 
-        [NotMapped]
-        public string Extension => System.IO.Path.GetExtension(Path);
-
-        [NotMapped]
-        public string Title => System.IO.Path.GetFileName(Path);
+        public SharedFile(int userId, string diskPath, string originalName, long length)
+        {
+            UserId = userId;
+            DiskPath = diskPath;
+            OriginalName = originalName;
+            Length = length;
+            UploadedOn = DateTime.Now;
+            Links = new List<SharedLink>();
+        }
     }
 }

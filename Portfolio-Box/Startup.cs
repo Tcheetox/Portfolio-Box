@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,28 +25,23 @@ namespace Portfolio_Box
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Register our own services 
             services.AddDbContext<AppDBContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             services.AddHttpContextAccessor();
             services.AddSingleton(Configuration);
             services.AddScoped<CookieHandler>();
             services.AddScoped(user => User.GetUser(user));
+            services.AddScoped<ISharedFileFactory, SharedFileFactory>();
             services.AddScoped<ISharedFileRepository, SharedFileRepository>();
-            // Register framework services
-            services.AddControllersWithViews();
+            services.AddControllers();
 
-            // TODO: config
             services.Configure<KestrelServerOptions>(options =>
             {
-                options.Limits.MaxRequestBodySize = int.MaxValue; // if don't set default value is: 30 MB
+                options.Limits.MaxRequestBodySize = Configuration.GetValue<long>("File:MaxBytes");
             });
 
-            services.AddRazorPages(options => {
-                options.Conventions.AddPageApplicationModelConvention("/FileUpload",model => {
-                   model.Filters.Add(new GenerateAntiforgeryTokenCookieAttribute());
-                   model.Filters.Add(new DisableFormValueModelBindingAttribute());
-               });
-            });
+            services.AddRazorPages(options =>
+                options.Conventions.AddPageApplicationModelConvention("/Index", model =>
+                    model.Filters.Add(new GenerateAntiforgeryTokenCookieAttribute())));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +52,10 @@ namespace Portfolio_Box
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                // else => ??? app.UseExceptionHandler("/Home/Error");
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
             }
 
             app.UseHttpsRedirection();

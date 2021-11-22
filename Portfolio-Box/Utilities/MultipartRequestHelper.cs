@@ -5,7 +5,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace Portfolio_Box.Utilities
 {
-    // DOC: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0
+    // READ MORE: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0
     public static class MultipartRequestHelper
     {
         // Content-Type: multipart/form-data; boundary="----WebKitFormBoundarymx2fSWqWSd0OxQqq"
@@ -30,7 +30,6 @@ namespace Portfolio_Box.Utilities
 
         public static bool HasFormDataContentDisposition(ContentDispositionHeaderValue contentDisposition)
         {
-            // Content-Disposition: form-data; name="key";
             return contentDisposition != null
                 && contentDisposition.DispositionType.Equals("form-data")
                 && string.IsNullOrEmpty(contentDisposition.FileName.Value)
@@ -39,7 +38,6 @@ namespace Portfolio_Box.Utilities
 
         public static bool HasFileContentDisposition(ContentDispositionHeaderValue contentDisposition)
         {
-            // Content-Disposition: form-data; name="myfile1"; filename="Misc 002.jpg"
             return contentDisposition != null
                 && contentDisposition.DispositionType.Equals("form-data")
                 && (!string.IsNullOrEmpty(contentDisposition.FileName.Value)

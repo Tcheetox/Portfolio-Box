@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Portfolio_Box.Models.Shared
 {
-    public class SharedFileRepository : ISharedFileRepository
+    public class SharedFileRepository : PageModel, ISharedFileRepository
     { 
         private readonly AppDBContext _appDBContext;
         private readonly User.User _user;
@@ -26,6 +27,12 @@ namespace Portfolio_Box.Models.Shared
                     select f)
                     .Include(c => c.Links)
                     .FirstOrDefault();
+        }
+
+        public void SaveFile(SharedFile sharedFile)
+        {
+            _appDBContext.Files.Add(sharedFile);
+            _appDBContext.SaveChanges();
         }
     }
 }

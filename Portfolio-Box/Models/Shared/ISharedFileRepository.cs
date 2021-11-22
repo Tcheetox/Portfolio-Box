@@ -7,5 +7,7 @@ namespace Portfolio_Box.Models.Shared
         public IEnumerable<SharedFile> AllFiles { get; }
 
         public SharedFile GetSharedFileById(int id);
+
+        public void SaveFile(SharedFile sharedFile);
     }
 }

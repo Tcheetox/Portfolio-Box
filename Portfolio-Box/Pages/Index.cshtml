@@ -1,0 +1,10 @@
+﻿@page
+@model Portfolio_Box.Pages.IndexModel
+
+<div class="text-center">
+    <h1 class="display-4">My files library</h1>
+    @foreach(SharedFile file in Model.SharedFileRepository.AllFiles)
+    {
+        <partial name="_FileTile" model="file" />
+    }
+</div>

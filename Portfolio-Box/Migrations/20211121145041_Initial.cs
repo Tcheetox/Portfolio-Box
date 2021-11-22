@@ -15,10 +15,9 @@ namespace Portfolio_Box.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: false),
-                    Path = table.Column<string>(nullable: false),
-                    Author = table.Column<string>(nullable: false),
-                    Size = table.Column<double>(nullable: false),
+                    DiskPath = table.Column<string>(nullable: false),
+                    OriginalName = table.Column<string>(nullable: false),
+                    Length = table.Column<long>(nullable: false),
                     UploadedOn = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
