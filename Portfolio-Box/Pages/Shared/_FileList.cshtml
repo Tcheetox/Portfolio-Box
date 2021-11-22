@@ -1,0 +1,10 @@
+﻿@model SharedFileRepository
+
+@foreach(SharedFile file in Model.AllFiles)
+{
+    <div class="file-tile">
+        <div>@file.OriginalName</div>
+        <div>@file.UploadedOn</div>
+        <div>@file.Length</div>
+    </div>
+}

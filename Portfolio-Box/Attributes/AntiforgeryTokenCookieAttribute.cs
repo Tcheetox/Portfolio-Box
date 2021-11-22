@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 
 namespace Portfolio_Box.Attributes
 {
-    public class GenerateAntiforgeryTokenCookieAttribute : ResultFilterAttribute
+    public class AntiforgeryTokenCookieAttribute : ResultFilterAttribute
     {
         public override void OnResultExecuting(ResultExecutingContext context)
         {

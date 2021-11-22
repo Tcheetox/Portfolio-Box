@@ -41,7 +41,7 @@ namespace Portfolio_Box
 
             services.AddRazorPages(options =>
                 options.Conventions.AddPageApplicationModelConvention("/Index", model =>
-                    model.Filters.Add(new GenerateAntiforgeryTokenCookieAttribute())));
+                    model.Filters.Add(new AntiforgeryTokenCookieAttribute())));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

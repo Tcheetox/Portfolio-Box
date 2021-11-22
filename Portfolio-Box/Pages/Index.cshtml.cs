@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Portfolio_Box.Extensions;
 using Portfolio_Box.Models;
@@ -37,6 +39,14 @@ namespace Portfolio_Box.Pages
         public IActionResult OnGetDashboard()
         {
             return Redirect(DashboardUri.ToString());
+        }
+
+        public PartialViewResult OnGetFileListPartial()
+        {
+            return new PartialViewResult() {
+                ViewName = "_FileList",
+                ViewData = new ViewDataDictionary<ISharedFileRepository>(ViewData, SharedFileRepository)
+            };
         }
     }
 }

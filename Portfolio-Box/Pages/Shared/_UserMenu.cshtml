@@ -2,8 +2,8 @@
 
 @if (Model is AuthorizedUser)
 {
-    <button type="button" id="uploadButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-      Upload
+    <button type="button" id="uploadButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal" onclick="clearInput()">
+        Upload
     </button>
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="UploadFile" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -42,27 +42,40 @@
 
 <script>
     "use strict";
+
     const getCookie = name => {
-        var value = "; " + document.cookie;
-        var parts = value.split("; " + name + "=");
+        const value = "; " + document.cookie;
+        const parts = value.split("; " + name + "=");
         if (parts.length == 2) return parts.pop().split(";").shift();
     }
 
-    const submitAjax = async oFormElement => {
-        const formData = new FormData(oFormElement);
+    const refreshView = async () => {
+        $.ajax({ url : `${window.location.href}?handler=FileListPartial`, type : 'GET', cache : false,
+            success : (results) => $("#fileList").html(results)
+        });
+    }
+
+    const submitAjax = async form => {
         try {
             $("#uploadButton").prop("disabled", true);
-            const response = await fetch(oFormElement.action, {
+            await fetch(form.action, {
                 method: 'POST',
-                headers: {
-                'RequestVerificationToken': getCookie('RequestVerificationToken')
-                },
-                body: formData
+                headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
+                body: new FormData(form)
             });
+            refreshView() // Reload partial _FileList to display updated results 
         } catch (error) {
             console.error('Error:', error);
         } finally {
             $("#uploadButton").prop("disabled", false);
+        }
+    }
+
+    const clearInput = () => {
+        try {
+            $("#file").val('');
+        } catch (error) {
+            console.error('Error:', error);
         }
     }
 </script>
