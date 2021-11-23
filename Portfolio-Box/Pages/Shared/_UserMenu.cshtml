@@ -8,7 +8,7 @@
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="UploadFile" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form id="uploadForm" class="upload" enctype="multipart/form-data" method="post" action="drop2vlar/file/upload" onsubmit="submitAjax(this);return false;">
+                <form id="uploadForm" class="upload" enctype="multipart/form-data" method="post" action="drop2vlar/file/upload" onsubmit="uploadFile(this);return false;">
                     <div class="modal-header">
                         <h5 class="modal-title" id="UploadFile">Choose a file</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -17,7 +17,6 @@
                         <input id="file" name="file" type="file" class="form-control">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
                     </div>
                 </form>
@@ -39,7 +38,6 @@
     </form>
 }
 
-
 <script>
     "use strict";
 
@@ -49,13 +47,7 @@
         if (parts.length == 2) return parts.pop().split(";").shift();
     }
 
-    const refreshView = async () => {
-        $.ajax({ url : `${window.location.href}?handler=FileListPartial`, type : 'GET', cache : false,
-            success : (results) => $("#fileList").html(results)
-        });
-    }
-
-    const submitAjax = async form => {
+    const uploadFile = async form => {
         try {
             $("#uploadButton").prop("disabled", true);
             await fetch(form.action, {
@@ -63,7 +55,8 @@
                 headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
                 body: new FormData(form)
             });
-            refreshView() // Reload partial _FileList to display updated results 
+            // Reload partial _FileList to display updated results 
+            refreshFileList()
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -71,11 +64,8 @@
         }
     }
 
-    const clearInput = () => {
-        try {
-            $("#file").val('');
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+    const clearInput = () => $("#file").val('')
+
+    const refreshFileList = () => $("#fileList").load(`${window.location.href}?handler=FileListPartial`)
+
 </script>

@@ -9,7 +9,7 @@ using Portfolio_Box.Models;
 namespace Portfolio_Box.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20211121145041_Initial")]
+    [Migration("20211123172034_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,19 +55,23 @@ namespace Portfolio_Box.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("DownloadUri")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("Expiration")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("ExternalPath")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SharedFileId")
+                    b.Property<int>("FileId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("datetime");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SharedFileId");
+                    b.HasIndex("FileId")
+                        .IsUnique();
 
                     b.ToTable("Links");
                 });
@@ -146,9 +150,9 @@ namespace Portfolio_Box.Migrations
 
             modelBuilder.Entity("Portfolio_Box.Models.Shared.SharedLink", b =>
                 {
-                    b.HasOne("Portfolio_Box.Models.Shared.SharedFile", null)
-                        .WithMany("Links")
-                        .HasForeignKey("SharedFileId")
+                    b.HasOne("Portfolio_Box.Models.Shared.SharedFile", "File")
+                        .WithOne("Link")
+                        .HasForeignKey("Portfolio_Box.Models.Shared.SharedLink", "FileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
-using Portfolio_Box.Attributes;
-using Portfolio_Box.Models.Shared;
-using Portfolio_Box.Models.User;
-using Portfolio_Box.Utilities;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using Portfolio_Box.Models.Shared;
+using Portfolio_Box.Utilities;
 
 namespace Portfolio_Box.Controllers
 {
@@ -19,14 +18,48 @@ namespace Portfolio_Box.Controllers
         private readonly ILogger<FileController> _logger;
         private readonly ISharedFileRepository _sharedFileRepository;
         private readonly ISharedFileFactory _sharedFileFactory;
-        private readonly User _user;
 
-        public FileController(ILogger<FileController> logger, User user, ISharedFileRepository sharedFileRepository, ISharedFileFactory sharedFileFactory)
+        public FileController(ILogger<FileController> logger, ISharedFileRepository sharedFileRepository, ISharedFileFactory sharedFileFactory)
         {
             _logger = logger;
-            _user = user;
             _sharedFileRepository = sharedFileRepository;
             _sharedFileFactory = sharedFileFactory;
+        }
+
+        [HttpGet]
+        public IActionResult Download(int id)
+        {
+            SharedFile file = _sharedFileRepository.GetFileById(id);
+            return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
+        }
+
+        [HttpGet]
+        public IActionResult Download(string uri)
+        {
+            SharedFile file = _sharedFileRepository.GetFileByDownloadUri(uri);
+            return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
+        }
+
+        [HttpDelete]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sharedFileRepository.DeleteFileById(id);
+            return NoContent();
+        }
+
+        [HttpGet]
+        public PartialViewResult Details(int id)
+        {
+            SharedFile file = _sharedFileRepository.GetFileById(id);
+            if (file == null)
+                _logger.LogError("File request returned null because the file doesn't exist or do not pertain to the user");
+
+            return new PartialViewResult()
+            {
+                ViewName = "_FileDetails",
+                ViewData = new ViewDataDictionary<SharedFile>(ViewData, file)
+            };
         }
 
         [HttpPost]

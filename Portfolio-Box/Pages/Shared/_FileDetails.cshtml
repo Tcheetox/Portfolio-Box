@@ -1,0 +1,57 @@
+﻿@using static Portfolio_Box.Models.Shared.SharedLink
+@model SharedFile
+
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        @if (Model != null)
+        {
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.OriginalName</h5>
+                <h6>@Model.UploadedOn</h6>
+                <h6>@Model.Length</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (Model.Link != null)
+                {
+                    <div class="row">
+                            <div class="col-md-7">
+                                <label for="downloadUrl" class="form-label">Download URL <small>(click to copy)</small></label>
+                                <input type="text" class="form-control" id="downloadUrl" value="@Model.Link.DownloadUri" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="expiresIn" class="form-label">Expiration</label>
+                                <input type="text" class="form-control" id="downloadUrl" value="@Model.Link.Expiration" readonly>
+                            </div>
+                            <div class="col-md-1 align-self-end">
+                                <button type="submit">CREATE</button>
+                            </div>
+                        </div>
+                }
+                else
+                {
+                    <form asp-controller="Link" asp-action="Create">
+                        <input asp-for="@Model.Link.FileId" type="hidden" id="fileId" value="@Model.Id"/>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <label for="downloadUrl" class="form-label">Download URL</label>
+                                <input type="text" class="form-control" id="downloadUrl" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="@Model.Link.ExpiryOption" class="form-label">Expires in</label>
+                                <select asp-for="@Model.Link.ExpiryOption" id="expiresIn" class="form-select" asp-items="Html.GetEnumSelectList<ExpiresIn>()"></select>
+                            </div>
+                            <div class="col-md-1 align-self-end">
+                                <button type="submit">CREATE</button>
+                            </div>
+                        </div>
+                    </form>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteFile(@Model.Id)">Delete</button>
+                <a class="btn btn-primary" asp-controller="File" asp-action="Download" asp-route-id="@Model.Id">Download</a>
+            </div>
+        }
+    </div>
+</div>

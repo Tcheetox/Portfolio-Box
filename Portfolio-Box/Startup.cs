@@ -32,6 +32,7 @@ namespace Portfolio_Box
             services.AddScoped(user => User.GetUser(user));
             services.AddScoped<ISharedFileFactory, SharedFileFactory>();
             services.AddScoped<ISharedFileRepository, SharedFileRepository>();
+            services.AddScoped<ISharedLinkRepository, SharedLinkRepository>();
             services.AddControllers();
 
             services.Configure<KestrelServerOptions>(options =>

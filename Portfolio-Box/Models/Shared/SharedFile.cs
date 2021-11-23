@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Portfolio_Box.Models.Shared
 {
@@ -12,7 +14,7 @@ namespace Portfolio_Box.Models.Shared
         public string OriginalName { get; set; }
         public long Length { get; set; }
         public DateTime UploadedOn { get; set; }
-        public List<SharedLink> Links { get; set; }
+        public SharedLink? Link { get; set; }
 
         public SharedFile(int userId, string diskPath, string originalName, long length)
         {
@@ -21,7 +23,6 @@ namespace Portfolio_Box.Models.Shared
             OriginalName = originalName;
             Length = length;
             UploadedOn = DateTime.Now;
-            Links = new List<SharedLink>();
         }
     }
 }

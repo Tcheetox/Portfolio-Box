@@ -5,9 +5,9 @@ namespace Portfolio_Box.Models.Shared
     public interface ISharedFileRepository
     {
         public IEnumerable<SharedFile> AllFiles { get; }
-
-        public SharedFile GetSharedFileById(int id);
-
+        public SharedFile GetFileById(int id);
+        public SharedFile GetFileByDownloadUri(string downloadUri);
         public void SaveFile(SharedFile sharedFile);
+        public void DeleteFileById(int id);
     }
 }

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace Portfolio_Box.Models.Shared
 {
     public interface ISharedLinkRepository
     {
-        public IEnumerable<SharedLink> GetSharedLinksByFileId(int id);
+        public SharedLink GetLinkById(int id);
+        public SharedLink GetLinkByDownloadUri(string downloadUri);
+        public void SaveLink(SharedLink sharedLink);
+        public void DeleteLinkById(int id);
     }
 }

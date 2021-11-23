@@ -7,3 +7,24 @@
         <partial name="_FileList" model="Model.SharedFileRepository" />
     </div>
 </div>
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="FileDetails" aria-hidden="true">
+    <partial name="_FileDetails" model="null" />
+</div>
+
+@section Scripts {
+    <script>
+
+        const showDetails = id => {
+            $("#detailsModal").modal("show")
+            $("#detailsModal").load(`${window.location.href}/File/Details/${id}`)
+        }
+
+        const deleteFile = id => {
+            $.ajax({ url: `${window.location.href}/File/Delete/${id}`, type: 'DELETE', 
+            headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
+            success: $(`#fileTile[data-id=${id}]`).remove() })
+        }
+
+    </script>
+}

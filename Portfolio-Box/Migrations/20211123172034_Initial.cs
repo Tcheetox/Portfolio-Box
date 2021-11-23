@@ -37,16 +37,17 @@ namespace Portfolio_Box.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    SharedFileId = table.Column<int>(nullable: false),
-                    ExternalPath = table.Column<string>(nullable: false),
-                    Expiration = table.Column<DateTime>(nullable: false)
+                    FileId = table.Column<int>(nullable: false),
+                    DownloadUri = table.Column<string>(nullable: true),
+                    Expiration = table.Column<DateTime>(nullable: false),
+                    UpdatedOn = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Links", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Links_Files_SharedFileId",
-                        column: x => x.SharedFileId,
+                        name: "FK_Links_Files_FileId",
+                        column: x => x.FileId,
                         principalTable: "Files",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -58,9 +59,10 @@ namespace Portfolio_Box.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Links_SharedFileId",
+                name: "IX_Links_FileId",
                 table: "Links",
-                column: "SharedFileId");
+                column: "FileId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -2,7 +2,7 @@
 
 @foreach(SharedFile file in Model.AllFiles)
 {
-    <div class="file-tile">
+    <div id="fileTile" data-id="@file.Id" class="file-tile" onclick="showDetails(@file.Id)">
         <div>@file.OriginalName</div>
         <div>@file.UploadedOn</div>
         <div>@file.Length</div>

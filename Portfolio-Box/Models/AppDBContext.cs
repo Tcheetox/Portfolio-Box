@@ -14,7 +14,6 @@ namespace Portfolio_Box.Models
 
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
