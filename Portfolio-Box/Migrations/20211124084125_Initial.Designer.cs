@@ -9,7 +9,7 @@ using Portfolio_Box.Models;
 namespace Portfolio_Box.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20211123172034_Initial")]
+    [Migration("20211124084125_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,8 +56,9 @@ namespace Portfolio_Box.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("DownloadUri")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("varchar(767)");
 
                     b.Property<DateTime>("Expiration")
                         .HasColumnType("datetime");
@@ -69,6 +70,9 @@ namespace Portfolio_Box.Migrations
                         .HasColumnType("datetime");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DownloadUri")
+                        .IsUnique();
 
                     b.HasIndex("FileId")
                         .IsUnique();

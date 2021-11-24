@@ -44,15 +44,11 @@ namespace Portfolio_Box.Models.Shared
             _appDBContext.SaveChanges();
         }
 
-        public void DeleteFileById(int id)
+        public void DeleteFile(SharedFile sharedFile)
         {
-            SharedFile file = GetFileById(id);
-            if (file != null)
-            {
-                _appDBContext.Files.Remove(file);
-                _appDBContext.SaveChanges();
-                _sharedFileFactory.DeleteFile(file);
-            }
+            _appDBContext.Files.Remove(sharedFile);
+            _appDBContext.SaveChanges();
+            _sharedFileFactory.DeleteFile(sharedFile);
         }
     }
 }

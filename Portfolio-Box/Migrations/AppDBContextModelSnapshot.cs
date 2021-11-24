@@ -54,8 +54,9 @@ namespace Portfolio_Box.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("DownloadUri")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("varchar(767)");
 
                     b.Property<DateTime>("Expiration")
                         .HasColumnType("datetime");
@@ -67,6 +68,9 @@ namespace Portfolio_Box.Migrations
                         .HasColumnType("datetime");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DownloadUri")
+                        .IsUnique();
 
                     b.HasIndex("FileId")
                         .IsUnique();

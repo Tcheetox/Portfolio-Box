@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Portfolio_Box.Extensions;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,7 +13,7 @@ namespace Portfolio_Box.Models.Shared
         public SharedFile File { get; set; }
         public int FileId { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string DownloadUri { get; set; }
         public DateTime Expiration { get; set; }
         public DateTime UpdatedOn { get; set; }
@@ -64,12 +66,16 @@ namespace Portfolio_Box.Models.Shared
             }
         }
 
-        public SharedLink UpdateFrom(SharedLink sharedLink)
+        public void UpdateFrom(SharedLink sharedLink)
         {
             DownloadUri = sharedLink.DownloadUri;
             Expiration = sharedLink.Expiration;
             UpdatedOn = sharedLink.UpdatedOn;
-            return this;
+        }
+
+        public string GetUrl(string prefix)
+        {
+            return $"{prefix}/{DownloadUri}";
         }
     }
 }

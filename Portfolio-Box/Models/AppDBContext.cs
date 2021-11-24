@@ -20,6 +20,7 @@ namespace Portfolio_Box.Models
         {
             modelBuilder.Entity<AuthorizedUser>();
             modelBuilder.Entity<AnonymousUser>();
+            modelBuilder.Entity<SharedLink>(l => l.HasIndex(i => i.DownloadUri).IsUnique());
 
             base.OnModelCreating(modelBuilder);
         }

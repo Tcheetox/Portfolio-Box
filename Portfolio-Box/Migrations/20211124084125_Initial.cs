@@ -38,7 +38,7 @@ namespace Portfolio_Box.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     FileId = table.Column<int>(nullable: false),
-                    DownloadUri = table.Column<string>(nullable: true),
+                    DownloadUri = table.Column<string>(nullable: false, defaultValueSql: "UUID()"),
                     Expiration = table.Column<DateTime>(nullable: false),
                     UpdatedOn = table.Column<DateTime>(nullable: false)
                 },
@@ -57,6 +57,12 @@ namespace Portfolio_Box.Migrations
                 name: "IX_Files_UserId",
                 table: "Files",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Links_DownloadUri",
+                table: "Links",
+                column: "DownloadUri",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Links_FileId",

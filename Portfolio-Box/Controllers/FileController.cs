@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -27,25 +28,23 @@ namespace Portfolio_Box.Controllers
         }
 
         [HttpGet]
-        public IActionResult Download(int id)
+        public IActionResult DownloadById(int id)
         {
             SharedFile file = _sharedFileRepository.GetFileById(id);
+            if (file == null)
+                return NotFound();
+
             return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
         }
 
         [HttpGet]
-        public IActionResult Download(string uri)
+        public IActionResult DownloadByUrl(string url)
         {
-            SharedFile file = _sharedFileRepository.GetFileByDownloadUri(uri);
-            return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
-        }
+            SharedFile file = _sharedFileRepository.GetFileByDownloadUri(url.Split('/').Last());
+            if (file == null)
+                return NotFound();
 
-        [HttpDelete]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
-        {
-            _sharedFileRepository.DeleteFileById(id);
-            return NoContent();
+            return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
         }
 
         [HttpGet]
@@ -53,7 +52,7 @@ namespace Portfolio_Box.Controllers
         {
             SharedFile file = _sharedFileRepository.GetFileById(id);
             if (file == null)
-                _logger.LogError("File request returned null because the file doesn't exist or do not pertain to the user");
+                _logger.LogError("File details request returned null because the file doesn't exist or do not pertain to the user");
 
             return new PartialViewResult()
             {
@@ -62,13 +61,29 @@ namespace Portfolio_Box.Controllers
             };
         }
 
+        [HttpDelete]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            SharedFile file = _sharedFileRepository.GetFileById(id);
+            if (file == null)
+            {
+                ModelState.AddModelError("File", "The delete request couldn't be processed");
+                _logger.LogError("File delete request returned null because the file doesn't exist or do not pertain to the user");
+                return NotFound(ModelState);
+            }
+
+            _sharedFileRepository.DeleteFile(file);
+            return NoContent();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upload()
         {
             if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
-                ModelState.AddModelError("SharedFile", "The request couldn't be processed (Error 1)");
+                ModelState.AddModelError("File", "The upload request couldn't be processed");
                 _logger.LogError("Request content type is not multi-part");
                 return BadRequest(ModelState);
             }
@@ -83,7 +98,7 @@ namespace Portfolio_Box.Controllers
                 if (ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition))
                     if (!MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
                     {
-                        ModelState.AddModelError("File", "The request couldn't be processed (Error 2)");
+                        ModelState.AddModelError("File", "The upload request couldn't be processed");
                         _logger.LogError("Request content disposition is missing");
                         return BadRequest(ModelState);
                     }

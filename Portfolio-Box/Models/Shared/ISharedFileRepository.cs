@@ -8,6 +8,6 @@ namespace Portfolio_Box.Models.Shared
         public SharedFile GetFileById(int id);
         public SharedFile GetFileByDownloadUri(string downloadUri);
         public void SaveFile(SharedFile sharedFile);
-        public void DeleteFileById(int id);
+        public void DeleteFile(SharedFile sharedFile);
     }
 }
