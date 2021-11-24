@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Portfolio_Box.Extensions;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,10 +24,15 @@ namespace Portfolio_Box.Models.Shared
 
         public enum ExpiresIn
         {
+            [Display(Name = "One hour")]
             OneHour = 1,
+            [Display(Name = "One day")]
             OneDay = 2,
+            [Display(Name = "One week")]
             OneWeek = 3,
+            [Display(Name = "One month")]
             OneMonth = 4,
+            [Display(Name = "Never")]
             Never = 5
         }
 
@@ -71,11 +74,6 @@ namespace Portfolio_Box.Models.Shared
             DownloadUri = sharedLink.DownloadUri;
             Expiration = sharedLink.Expiration;
             UpdatedOn = sharedLink.UpdatedOn;
-        }
-
-        public string GetUrl(string prefix)
-        {
-            return $"{prefix}/{DownloadUri}";
         }
     }
 }

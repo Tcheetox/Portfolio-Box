@@ -1,6 +1,6 @@
 ﻿@model User
 
-@if (Model is AuthorizedUser)
+@if (Model is AuthorizedUser && @ViewContext.ActionDescriptor.DisplayName == "/Index")
 {
     <button type="button" id="uploadButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal" onclick="clearInput()">
         Upload
@@ -8,7 +8,7 @@
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="UploadFile" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form id="uploadForm" class="upload" enctype="multipart/form-data" method="post" action="drop2vlar/file/upload" onsubmit="uploadFile(this);return false;">
+                <form id="uploadForm" class="upload" enctype="multipart/form-data" onsubmit="uploadFile(this);return false;">
                     <div class="modal-header">
                         <h5 class="modal-title" id="UploadFile">Choose a file</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -26,7 +26,7 @@
 }
 
 <div class="nickname">
-    <a asp-page-handler="Dashboard">
+    <a asp-page="/Index" asp-page-handler="Dashboard">
         @Model.Nickname
     </a>
 </div>
@@ -34,31 +34,6 @@
 @if (Model is AuthorizedUser)
 {
     <form class="logout" method="post">
-        <button asp-page-handler="Disconnect" class="btn btn-primary">Logout</button>
+        <button asp-page="/Index" asp-page-handler="Disconnect" class="btn btn-primary">Logout</button>
     </form>
 }
-
-<script>
-
-    const uploadFile = async form => {
-        try {
-            $("#uploadButton").prop("disabled", true);
-            await fetch(form.action, {
-                method: 'POST',
-                headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
-                body: new FormData(form)
-            });
-            // Reload partial _FileList to display updated results 
-            refreshFileList()
-        } catch (error) {
-            console.error('Error:', error);
-        } finally {
-            $("#uploadButton").prop("disabled", false);
-        }
-    }
-
-    const clearInput = () => $("#file").val('')
-
-    const refreshFileList = () => $("#fileList").load(`${window.location.href}?handler=FileListPartial`)
-
-</script>

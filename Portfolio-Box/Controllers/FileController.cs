@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Portfolio_Box.Models.Shared;
+using Portfolio_Box.Models.User;
+using Portfolio_Box.Pages;
 using Portfolio_Box.Utilities;
 
 namespace Portfolio_Box.Controllers
@@ -19,10 +21,12 @@ namespace Portfolio_Box.Controllers
         private readonly ILogger<FileController> _logger;
         private readonly ISharedFileRepository _sharedFileRepository;
         private readonly ISharedFileFactory _sharedFileFactory;
+        private readonly User _user;
 
-        public FileController(ILogger<FileController> logger, ISharedFileRepository sharedFileRepository, ISharedFileFactory sharedFileFactory)
+        public FileController(ILogger<FileController> logger, User user, ISharedFileRepository sharedFileRepository, ISharedFileFactory sharedFileFactory)
         {
             _logger = logger;
+            _user = user;
             _sharedFileRepository = sharedFileRepository;
             _sharedFileFactory = sharedFileFactory;
         }
@@ -38,11 +42,14 @@ namespace Portfolio_Box.Controllers
         }
 
         [HttpGet]
-        public IActionResult DownloadByUrl(string url)
+        public IActionResult Download(string id)
         {
-            SharedFile file = _sharedFileRepository.GetFileByDownloadUri(url.Split('/').Last());
+            if (string.IsNullOrEmpty(id))
+                return View("FileNotFound", new FileNotFoundModel(_user));
+
+            SharedFile file = _sharedFileRepository.GetFileByDownloadUri(id.Split('/').Last());
             if (file == null)
-                return NotFound();
+                return View("FileNotFound", new FileNotFoundModel(_user));
 
             return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
         }

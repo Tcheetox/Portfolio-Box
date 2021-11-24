@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,9 +41,11 @@ namespace Portfolio_Box
                 options.Limits.MaxRequestBodySize = Configuration.GetValue<long>("File:MaxBytes");
             });
 
+
             services.AddRazorPages(options =>
                 options.Conventions.AddPageApplicationModelConvention("/Index", model =>
                     model.Filters.Add(new AntiforgeryTokenCookieAttribute())));
+            services.Configure<RazorViewEngineOptions>(options => options.ViewLocationFormats.Add("/Pages/{0}.cshtml"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

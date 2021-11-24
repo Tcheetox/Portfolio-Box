@@ -12,15 +12,6 @@ namespace Portfolio_Box.Models.Shared
             _appDBContext = appDBContext;
         }
 
-        public SharedLink GetLinkByDownloadUri(string downloadUri)
-        {
-            return (from l in _appDBContext.Links
-                    where l.DownloadUri == downloadUri
-                    select l)
-                    .Include(f => f.File)
-                    .FirstOrDefault();
-        }
-
         public SharedLink GetLinkById(int id)
         {
             return (from l in _appDBContext.Links

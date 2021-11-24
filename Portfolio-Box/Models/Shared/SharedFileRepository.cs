@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Portfolio_Box.Models.Shared
 {
@@ -33,7 +34,7 @@ namespace Portfolio_Box.Models.Shared
         public SharedFile GetFileByDownloadUri(string downloadUri)
         {
             return (from f in _appDBContext.Files
-                    where f.Link != null && f.Link.DownloadUri == downloadUri
+                    where f.Link != null && f.Link.DownloadUri == downloadUri && f.Link.Expiration > DateTime.Now
                     select f)
                     .FirstOrDefault();
         }
