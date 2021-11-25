@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Portfolio_Box.Extensions
 {
-    public static class UriExtensions
+    public static class UriExtension
     {
         public static Uri Append(this Uri uri, params string[] paths)
         {
