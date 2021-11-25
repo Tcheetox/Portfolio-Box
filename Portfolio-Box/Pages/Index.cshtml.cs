@@ -38,6 +38,7 @@ namespace Portfolio_Box.Pages
 
         public IActionResult OnGetDashboard()
         {
+            // TODO: automatic redirect
             return Redirect(DashboardUri.ToString());
         }
 

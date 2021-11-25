@@ -57,16 +57,14 @@ namespace Portfolio_Box
 
             if (env.IsDevelopment())
             {
-                Debug.WriteLine("> Portfolio-Box running in development mode");
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                Debug.WriteLine("> Portfolio-Box running in production mode");
                 app.UseExceptionHandler("/Error");
             }
 
-            //app.UseHttpsRedirection();
+            // app.UseHttpsRedirection(); -> Nginx handles it let's not use https through proxy_pass directive
             app.UseStaticFiles();
             app.UseRouting();
 

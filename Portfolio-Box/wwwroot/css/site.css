@@ -17,5 +17,25 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+:root {
+    --default-animation-duration: 200ms;
+    --main-color: #007bff;
+    --main-hover-color: #0056b3;
+
+    --text-color-light: #444444;
+    --main-overlay: rgba(255, 255, 255, 0.2);
+    --main-shadow: 1px 3px 9px 3px rgba(0, 0, 0, 0.1);
+    --filter-min-width: 60px;
+    --project-tile-width: 335px;
+    --project-tile-min-width: 315px;
+    --project-tile-height: 300px;
+    --project-title-margin: 5px;
+    --project-border-radius: 10px;
+    --project-tile-icon-size: 80px;
+    --project-description-max-height: 335px;
 }
