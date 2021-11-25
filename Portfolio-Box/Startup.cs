@@ -7,10 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Portfolio_Box.Attributes;
 using Portfolio_Box.Models;
 using Portfolio_Box.Models.Shared;
 using Portfolio_Box.Models.User;
+using System.Diagnostics;
 
 namespace Portfolio_Box
 {
@@ -55,14 +57,16 @@ namespace Portfolio_Box
 
             if (env.IsDevelopment())
             {
+                Debug.WriteLine("> Portfolio-Box running in development mode");
                 app.UseDeveloperExceptionPage();
             }
             else
             {
+                Debug.WriteLine("> Portfolio-Box running in production mode");
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
 
