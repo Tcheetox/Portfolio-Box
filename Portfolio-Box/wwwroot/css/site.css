@@ -1,5 +1,6 @@
 @import './partials/_header.css';
 @import './partials/_footer.css';
+@import './partials/_files.css';
 
 html {
   font-size: 24px;
@@ -22,20 +23,60 @@ body {
   flex-direction: column;
 }
 
+main {
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+}
+
 :root {
     --default-animation-duration: 200ms;
     --main-color: #007bff;
     --main-hover-color: #0056b3;
+}
 
-    --text-color-light: #444444;
-    --main-overlay: rgba(255, 255, 255, 0.2);
-    --main-shadow: 1px 3px 9px 3px rgba(0, 0, 0, 0.1);
-    --filter-min-width: 60px;
-    --project-tile-width: 335px;
-    --project-tile-min-width: 315px;
-    --project-tile-height: 300px;
-    --project-title-margin: 5px;
-    --project-border-radius: 10px;
-    --project-tile-icon-size: 80px;
-    --project-description-max-height: 335px;
+h2 {
+    font-size: 28px;
+}
+
+.title {
+    font-weight: 600;
+    padding: 0.2rem 0;
+    width: max-content;
+    margin: auto;
+    position: relative;
+}
+.title:after {
+    position: absolute;
+    content: '';
+    width: 50%;
+    height: 2px;
+    top: 110%;
+    left: 25%;
+    background: var(--main-color);
+    border-radius: 100px;
+    transform: rotate(25deg);
+    animation: jiggle var(--default-animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55) var(--default-animation-duration) 1 normal both;
+}
+
+@keyframes jiggle {
+    100% {
+        transform: rotate(-7deg);
+    }
+}
+
+button.unstyled {
+    border: none;
+    background-color: inherit;
+    padding: 0;
+}
+
+.modal-dialog {
+    max-width: 600px;
+}
+
+img.scale {
+    transition: all 100ms;
+}
+img.scale:hover {
+    transform: scale(1.05);
 }

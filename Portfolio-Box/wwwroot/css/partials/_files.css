@@ -1,0 +1,93 @@
+﻿.file-list {
+    display: flex;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.file-icon {
+    padding-right: 0.5rem;
+}
+
+.file-tile {
+    width: max-content;
+    max-width: 40%;
+    max-height: 72px;
+    padding: 0.5rem;
+    margin: 0.5rem 0.8rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    flex-grow: 1;
+    display: flex;
+    flex-wrap: nowrap;
+    transition: all var(--default-animation-duration);
+    box-shadow: 1px 3px 3px 3px rgba(0, 0, 0, 0.05);
+}
+.file-list .file-tile:hover {
+    transform: scale(1.05);
+    background-color: #f6f6f6;
+}
+
+.file-icon, .file-info {
+    width: max-content;
+}
+
+.file-info {
+    text-align: left;
+    max-width: calc(100% - 54px);
+    height: max-content;
+    padding-left: 0;
+    margin: auto auto auto 0;
+    flex-grow: 1;
+}
+
+.file-title {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-details {
+    font-size: 14px;
+    color: gray;
+}
+
+.modal-header .file-tile {
+    transform: unset;
+    border: unset;
+    box-shadow: unset;
+    margin: 0;
+    padding: 0;
+    max-width: unset;
+}
+.modal-header .file-info {
+    max-width: calc(100% - 100px);
+}
+.modal-header .btn-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.modal-dialog .expired {
+   color: red;
+}
+
+.handle-link {
+    margin-bottom: 0.4rem;
+    left: -10px;
+    position: relative;
+}
+
+.modal-dialog .col-md-7 {
+    width: 60.33333%;
+}
+.modal-dialog .col-md-1 {
+    width: 6.33333%;
+}
+
+.clipboardable {
+    cursor: pointer;
+}

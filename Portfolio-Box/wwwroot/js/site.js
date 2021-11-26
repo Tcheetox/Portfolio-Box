@@ -64,3 +64,8 @@ const deleteLink = async (id, linkId) => {
         success: () => showDetails(id)
     })
 }
+
+const copyToClipboard = () => {
+    navigator.clipboard.writeText($("#downloadUrl").val())
+    $("#clipMe").text("(copied!)")
+}

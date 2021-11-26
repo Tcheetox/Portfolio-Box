@@ -25,15 +25,25 @@
     </div>
 }
 
-<div class="nickname">
-    <a asp-page="/Index" asp-page-handler="Dashboard">
-        @Model.Nickname
-    </a>
-</div>
-
 @if (Model is AuthorizedUser)
 {
+    <div class="nickname authorized">
+        <a asp-page="/Index" asp-page-handler="Dashboard">
+            @Model.Nickname
+        </a>
+    </div>
+
     <form class="logout" method="post">
-        <button asp-page="/Index" asp-page-handler="Disconnect" class="btn btn-primary">Logout</button>
+        <button class="unstyled" asp-page="/Index" asp-page-handler="Disconnect">
+            <img class="scale" src="~/media/logout.png" width="24" height="24" alt="logout"><img>
+        </button>
     </form>
+}
+else
+{
+    <div class="nickname anonymous">
+        <a asp-page="/Index" asp-page-handler="Dashboard">
+            @Model.Nickname
+        </a>
+    </div>
 }

@@ -11,8 +11,10 @@ nav {
 }
 
 .nickname {
-    margin: auto 0.8rem auto 1rem;
+    margin: auto 0.5rem auto 1rem;
     padding-left: 0.8rem;
+}
+.nickname.authorized {
     border-left: 1px solid lightgray;
 }
 .nickname a {
@@ -34,5 +36,9 @@ nav {
 #uploadButton {
     height: max-content;
     font-size: 1rem;
+    margin: auto;
+}
+
+.logout {
     margin: auto;
 }

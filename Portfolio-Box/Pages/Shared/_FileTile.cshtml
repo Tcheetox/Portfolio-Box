@@ -1,0 +1,12 @@
+﻿@using Portfolio_Box.Extensions
+@model SharedFile
+
+<div id="fileTile-@Model.Id" class="file-tile" onclick="showDetails(@Model.Id)">
+    <div class="file-icon">
+        <img alt="@Model.Extension" width="54" height="54" src="@Model.GetIcon()">
+    </div>
+    <div class="file-info">
+        <div class="file-title">@Model.OriginalName</div>
+        <div class="file-details">@Model.GetSize() - @Model.UploadedOn.ToString("d/MM/yyyy")</div>
+    </div>
+</div>

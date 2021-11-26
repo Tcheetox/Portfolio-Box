@@ -7,28 +7,46 @@ namespace Portfolio_Box.Extensions
     {
         public static string GetSize(this SharedFile sharedFile)
         {   
-            int gb = 1073741824;
-            if (sharedFile.Length < gb)
-            {
-                // Display as Gigabytes
-                return (sharedFile.Length / gb).ToString("#.##");
-            }
+            double gb = 1073741824;
+            if (sharedFile.Length > gb)
+                return (sharedFile.Length / gb).ToString("0.## GB"); // Display as Gigabytes
             else
-            {
-                // Display as Megabytes
-                return (sharedFile.Length / 1048576).ToString("#.##");
-            }
+                return (sharedFile.Length / (double)1048576).ToString("0.## MB"); // Display as Megabytes
         }
 
         public static string GetIcon(this SharedFile sharedFile)
         {
-            string extension = Path.GetExtension(sharedFile.OriginalName);
             string file;
-            switch (extension)
+            switch (sharedFile.Extension.ToLowerInvariant())
             {
                 case ".xls":
                 case ".xlsx":
                     file = "xls.png";
+                    break;
+
+                case ".exe":
+                    file = "exe.png";
+                    break;
+
+                case ".mp3":
+                    file = "mp3.png";
+                    break;
+
+                case ".wav":
+                    file = "wav.png";
+                    break;
+
+                case ".jpg":
+                case ".jpeg":
+                case ".gif":
+                case ".png":
+                case ".bmp":
+                case ".tiff":
+                    file = "picture.png";
+                    break;
+
+                case ".txt":
+                    file = "txt.png";
                     break;
 
                 case ".pdf":
@@ -63,7 +81,7 @@ namespace Portfolio_Box.Extensions
                     break;
             }
 
-            return "~/media/" + file;
+            return "drop2vlar/media/" + file;
         }
     }
 }
