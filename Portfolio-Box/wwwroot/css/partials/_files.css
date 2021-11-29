@@ -15,13 +15,13 @@
     max-height: 72px;
     padding: 0.5rem;
     margin: 0.5rem 0.8rem;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 0.5rem;
     cursor: pointer;
     flex-grow: 1;
     display: flex;
     flex-wrap: nowrap;
-    transition: all var(--default-animation-duration);
+    transition: all var(--animation-duration);
     box-shadow: 1px 3px 3px 3px rgba(0, 0, 0, 0.05);
 }
 .file-list .file-tile:hover {

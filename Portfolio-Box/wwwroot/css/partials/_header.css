@@ -2,7 +2,7 @@
     height: auto;
     box-shadow: 0px 6px 9px 0px rgba(0, 0, 0, 0.05);
     padding: 0.3rem 0;
-    transition: all var(--default-animation-duration);
+    transition: all var(--animation-duration);
     position: relative;
 }
 
@@ -28,7 +28,7 @@ nav {
 
 .logo {
     fill: var(--main-color);
-    transition: all var(--default-animation-duration);
+    transition: all var(--animation-duration);
 }
 .logo:hover {
     fill: var(--main-hover-color);

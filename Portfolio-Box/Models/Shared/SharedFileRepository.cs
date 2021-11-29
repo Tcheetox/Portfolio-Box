@@ -20,6 +20,7 @@ namespace Portfolio_Box.Models.Shared
 
         public IEnumerable<SharedFile> AllFiles => from f in _appDBContext.Files
                                                    where f.UserId == _user.Id
+                                                   orderby f.UploadedOn descending
                                                    select f;
 
         public SharedFile GetFileById(int id)
