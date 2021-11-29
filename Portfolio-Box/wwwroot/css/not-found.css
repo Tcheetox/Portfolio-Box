@@ -2,6 +2,7 @@
     text-align: center;
 }
 
-.not-found h2 {
+.not-found h3 {
     margin-top: 2rem;
+    font-size: 24px;
 }

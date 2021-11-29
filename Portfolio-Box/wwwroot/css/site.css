@@ -5,7 +5,15 @@
 @import './not-found.css';
 
 html {
-  font-size: 24px;
+    font-size: 24px;
+    overflow-x: hidden;
+}
+body {
+    width: 100vw;
+}
+body.modal-open, 
+.modal {
+    padding-right: 0 !important;
 }
 
 @media (min-width: 768px) {
