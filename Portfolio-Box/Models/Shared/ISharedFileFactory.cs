@@ -7,7 +7,7 @@ namespace Portfolio_Box.Models.Shared
 {
     public interface ISharedFileFactory
     {
-        public Task<(bool, SharedFile?)> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState);
+        public Task<SharedFile?> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState);
 
         public void DeleteFile(SharedFile sharedFile);
     }

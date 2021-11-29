@@ -39,22 +39,19 @@ namespace Portfolio_Box.Models.Shared
             });
         }
 
-        public async Task<(bool, SharedFile?)> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState)
+        public async Task<SharedFile?> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState)
         {
-            (bool status, SharedFile? file) output = (false, null);
+            SharedFile? sharedFile = null;
             string trustedFileNameForDisplay = WebUtility.HtmlEncode(contentDisposition.FileName.Value);
             string trustedFileNameForFileStorage = Path.GetRandomFileName();
             string targetFilePath = _configuration.GetValue<string>("File:StorePath");
-            // _configuration.GetValue<long>("File:MaxBytes")
 
-            // TODO: handle max size
             using (FileStream targetStream = File.Create(Path.Combine(targetFilePath, trustedFileNameForFileStorage)))
             {
                 try
                 {
                     await section.Body.CopyToAsync(targetStream);
-                    SharedFile sharedFile = new SharedFile(_user.Id, Path.Combine(targetFilePath, trustedFileNameForFileStorage), trustedFileNameForDisplay, targetStream.Length);
-                    output = (true, sharedFile);
+                    sharedFile = new SharedFile(_user.Id, Path.Combine(targetFilePath, trustedFileNameForFileStorage), trustedFileNameForDisplay, targetStream.Length);
                 }
                 catch (IOException ex)
                 {
@@ -64,7 +61,7 @@ namespace Portfolio_Box.Models.Shared
                 }
             }
 
-            return output;
+            return sharedFile;
         }
     }
 }

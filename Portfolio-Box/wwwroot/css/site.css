@@ -1,6 +1,7 @@
 @import './partials/_header.css';
 @import './partials/_footer.css';
 @import './partials/_files.css';
+@import './partials/_upload.css';
 
 html {
   font-size: 24px;
@@ -62,6 +63,10 @@ h2 {
     100% {
         transform: rotate(-7deg);
     }
+}
+
+.hidden {
+    display: none;
 }
 
 button.unstyled {

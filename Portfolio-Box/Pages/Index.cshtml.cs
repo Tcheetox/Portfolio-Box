@@ -8,6 +8,7 @@ using Portfolio_Box.Models;
 using Portfolio_Box.Models.Shared;
 using Portfolio_Box.Models.User;
 using System;
+using System.Diagnostics;
 
 namespace Portfolio_Box.Pages
 {
@@ -30,6 +31,13 @@ namespace Portfolio_Box.Pages
             DashboardUri = portfolioUri.Append(configuration.GetValue<string>("Hosting:Dashboard"));
         }
 
+        public IActionResult OnGet()
+        {
+            if (User is AnonymousUser)
+                return Redirect(RedirectUri.ToString());
+            return Page();
+        }
+
         public IActionResult OnPostDisconnect()
         {
             CookieHandler.KillAll(HttpContext.Response);
@@ -38,7 +46,6 @@ namespace Portfolio_Box.Pages
 
         public IActionResult OnGetDashboard()
         {
-            // TODO: automatic redirect
             return Redirect(DashboardUri.ToString());
         }
 

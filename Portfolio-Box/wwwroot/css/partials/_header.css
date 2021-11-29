@@ -3,6 +3,7 @@
     box-shadow: 0px 6px 9px 0px rgba(0, 0, 0, 0.05);
     padding: 0.3rem 0;
     transition: all var(--default-animation-duration);
+    position: relative;
 }
 
 nav {
@@ -33,12 +34,28 @@ nav {
     fill: var(--main-hover-color);
 }
 
+.logout {
+    margin: auto;
+}
+
 #uploadButton {
     height: max-content;
     font-size: 1rem;
     margin: auto;
+    width: 70px;
+    height: 32px;
 }
 
-.logout {
+#uploadButton .spinner-border {
+    height: 1.4rem;
+    width: 1.4rem;
+    border-width: .15em;
     margin: auto;
+}
+
+#progressBar {
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    top: 98%;
 }

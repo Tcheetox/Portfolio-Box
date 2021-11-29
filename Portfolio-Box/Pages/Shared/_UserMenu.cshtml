@@ -2,8 +2,12 @@
 
 @if (Model is AuthorizedUser && @ViewContext.ActionDescriptor.DisplayName == "/Index")
 {
-    <button type="button" id="uploadButton" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal" onclick="clearInput()">
-        Upload
+    <button type="button" id="uploadButton" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal" onclick="restoreFileUploadDisplay()">
+        <span class="text-content">
+            Upload
+        </span>
+        <div class="spinner-border hidden" role="status">         
+        </div>
     </button>
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="UploadFile" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -14,10 +18,17 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <input id="file" name="file" type="file" class="form-control">
+                        <div id="dragArea" class="drag-area" ondrop="onDrop(event)" onclick="pickFile()" ondragenter="onDragEnter(event)" ondragleave="onDragLeave()" ondragover="onDragHover(event)">
+                            <div class="content">
+                                <img alt="" src="~/media/upload.png" height="64" width="64">
+                                <span class="message"><strong>Drop</strong> a file or <strong>click</strong> to upload</span>
+                                <span class="info">Max file size 10GB</span>
+                            </div>
+                        </div>
+                        <input id="files" name="files" type="file" class="hidden" onchange="fileChanged()" multiple>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
+                        <button id="submitUpload" type="submit" class="btn btn-primary" data-bs-dismiss="modal" disabled>Upload</button>
                     </div>
                 </form>
             </div>

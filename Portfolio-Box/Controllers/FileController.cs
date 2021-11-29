@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -99,7 +100,7 @@ namespace Portfolio_Box.Controllers
             MultipartReader reader = new MultipartReader(boundary, HttpContext.Request.Body);
             MultipartSection section = await reader.ReadNextSectionAsync();
 
-            (bool status, SharedFile? file) uploadRequest = (false, null);
+            List<SharedFile> uploadedFiles = new List<SharedFile>();
             while (section != null)
             {
                 if (ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition))
@@ -111,18 +112,20 @@ namespace Portfolio_Box.Controllers
                     }
                     else
                     {
-                        uploadRequest = await _sharedFileFactory.TryCreateFile(contentDisposition, section, ModelState);
+                        SharedFile? file = await _sharedFileFactory.TryCreateFile(contentDisposition, section, ModelState);
+                        if (file != null)
+                        {
+                            uploadedFiles.Add(file);
+                            _sharedFileRepository.SaveFile(file);
+                        }
                     }
 
                 // Drain any remaining section body that hasn't been consumed and read the headers for the next section
                 section = await reader.ReadNextSectionAsync();
             }
 
-            if (uploadRequest.status && uploadRequest.file != null)
-            {
-                _sharedFileRepository.SaveFile(uploadRequest.file);
-                return Created(nameof(FileController), uploadRequest.file);
-            }
+            if (uploadedFiles.Any())
+                return Created(nameof(FileController), uploadedFiles);
 
             return BadRequest(ModelState);
         }
