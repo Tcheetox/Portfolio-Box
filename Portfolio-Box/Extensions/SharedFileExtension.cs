@@ -5,7 +5,7 @@ namespace Portfolio_Box.Extensions
 {
     public static class SharedFileExtension
     {
-        public static IWebHostEnvironment? Environment { get; set; }
+        public static string? BasePath { get; set; }
 
         public static string GetSize(this SharedFile sharedFile)
         {   
@@ -83,7 +83,7 @@ namespace Portfolio_Box.Extensions
                     break;
             }
 
-            return (Environment != null && Environment.EnvironmentName == "Development") ? "drop2vlar/media/" + file : "media/" + file;
+            return BasePath + "/media/" + file;
         }
     }
 }

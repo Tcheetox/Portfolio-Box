@@ -52,8 +52,9 @@ namespace Portfolio_Box
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            SharedFileExtension.Environment = env;
-            app.UsePathBase(new PathString(Configuration.GetValue<string>("Hosting:BasePath")));
+            string basePath = new PathString(Configuration.GetValue<string>("Hosting:BasePath"));
+            SharedFileExtension.BasePath = basePath;
+            app.UsePathBase(basePath);
 
             if (env.IsDevelopment())
             {
