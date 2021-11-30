@@ -7,12 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Portfolio_Box.Attributes;
+using Portfolio_Box.Extensions;
 using Portfolio_Box.Models;
 using Portfolio_Box.Models.Shared;
 using Portfolio_Box.Models.User;
-using System.Diagnostics;
 
 namespace Portfolio_Box
 {
@@ -53,6 +52,7 @@ namespace Portfolio_Box
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            SharedFileExtension.Environment = env;
             app.UsePathBase(new PathString(Configuration.GetValue<string>("Hosting:BasePath")));
 
             if (env.IsDevelopment())

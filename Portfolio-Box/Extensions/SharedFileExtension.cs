@@ -1,10 +1,12 @@
-﻿using Portfolio_Box.Models.Shared;
-using System.IO;
+﻿using Microsoft.AspNetCore.Hosting;
+using Portfolio_Box.Models.Shared;
 
 namespace Portfolio_Box.Extensions
 {
     public static class SharedFileExtension
     {
+        public static IWebHostEnvironment? Environment { get; set; }
+
         public static string GetSize(this SharedFile sharedFile)
         {   
             double gb = 1073741824;
@@ -81,7 +83,7 @@ namespace Portfolio_Box.Extensions
                     break;
             }
 
-            return "drop2vlar/media/" + file;
+            return (Environment != null && Environment.EnvironmentName == "Development") ? "drop2vlar/media/" + file : "media/" + file;
         }
     }
 }
