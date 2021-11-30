@@ -6,6 +6,7 @@ Theoretical size limit is set to 10GB, multiple files can be uploaded at once.
 ## Note
 
 Upload progress displayed in the header. Links can be shared for a choosen duration.
+The authentication and authorization is done through another service on my portfolio website created around OAuth2 with NodeJS, ExpressJS and Sequelize.
 
 ## Tech
 
