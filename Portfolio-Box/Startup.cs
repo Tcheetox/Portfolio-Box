@@ -71,12 +71,12 @@ namespace Portfolio_Box
             // app.UseHttpsRedirection(); -> Nginx handles it let's not use https through proxy_pass directive
             app.UseStaticFiles(new StaticFileOptions
             {
-                OnPrepareResponse = ctx =>
-                {
-                    // Cache static files for 30 days
-                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000");
-                    ctx.Context.Response.Headers.Append("Expires", DateTime.UtcNow.AddDays(30).ToString("R", CultureInfo.InvariantCulture));
-                }
+                //OnPrepareResponse = ctx =>
+                //{
+                //    // Cache static files for 30 days
+                //    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000");
+                //    ctx.Context.Response.Headers.Append("Expires", DateTime.UtcNow.AddDays(30).ToString("R", CultureInfo.InvariantCulture));
+                //}
             });
             app.UseRouting();
 
