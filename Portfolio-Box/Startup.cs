@@ -13,6 +13,8 @@ using Portfolio_Box.Extensions;
 using Portfolio_Box.Models;
 using Portfolio_Box.Models.Shared;
 using Portfolio_Box.Models.User;
+using System;
+using System.Globalization;
 
 namespace Portfolio_Box
 {
@@ -67,7 +69,15 @@ namespace Portfolio_Box
             }
 
             // app.UseHttpsRedirection(); -> Nginx handles it let's not use https through proxy_pass directive
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    // Cache static files for 30 days
+                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000");
+                    ctx.Context.Response.Headers.Append("Expires", DateTime.UtcNow.AddDays(30).ToString("R", CultureInfo.InvariantCulture));
+                }
+            });
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
