@@ -60,10 +60,10 @@
     box-shadow: unset;
     margin: 0;
     padding: 0;
-    max-width: unset;
+    max-width: 100%;
 }
 .modal-header .file-info {
-    max-width: calc(100% - 100px);
+    max-width: calc(100% - 75px);
 }
 .modal-header .btn-close {
     position: absolute;

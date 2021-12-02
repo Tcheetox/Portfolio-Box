@@ -1,6 +1,11 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
+const getLocation = () => {
+    const current = window.location.href
+    return current.slice(-1) === "/" ? current.slice(0, -1) : current
+}
+
 const getCookie = name => {
     const parts = ("; " + document.cookie).split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
@@ -27,7 +32,7 @@ const uploadFile = async form => {
             progress = current
         }    
     }
-    xhr.open("POST", `${window.location.href}/file/upload`, true);
+    xhr.open("POST", `${getLocation()}/file/upload`, true);
     xhr.setRequestHeader("RequestVerificationToken", getCookie('RequestVerificationToken'));
     xhr.onreadystatechange = function() {
         if (this.readyState === XMLHttpRequest.DONE) {
@@ -43,21 +48,21 @@ const uploadFile = async form => {
     xhr.send(new FormData(form));
 }
 
-const refreshFileList = () => $("#fileList").load(`${window.location.href}?handler=FileListPartial`)
+const refreshFileList = () => $("#fileList").load(`${getLocation()}?handler=FileListPartial`)
 
 const adjustDownloadUrl = () => {
     const uri = $("#downloadUrl").val()
-    $("#downloadUrl").val(`${window.location.href}/file/download/${uri}`)
+    $("#downloadUrl").val(`${getLocation()}/file/download/${uri}`)
 }
 
 const showDetails = id => {
     $("#detailsModal").modal("show")
-    $("#detailsModal").load(`${window.location.href}/file/details/${id}`, adjustDownloadUrl)
+    $("#detailsModal").load(`${getLocation()}/file/details/${id}`, adjustDownloadUrl)
 }
 
 const deleteFile = id => {
     $.ajax({
-        url: `${window.location.href}/file/delete/${id}`,
+        url: `${getLocation()}/file/delete/${id}`,
         type: 'DELETE',
         headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
         success: () => $(`#fileTile-${id}`).remove()
@@ -66,7 +71,7 @@ const deleteFile = id => {
 
 const createLink = async (id, expiry) => {
     $.ajax({
-        url: `${window.location.href}/link/create?id=${id}&expiry=${expiry}`,
+        url: `${getLocation()}/link/create?id=${id}&expiry=${expiry}`,
         type: 'POST',
         headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
         success: () => showDetails(id)
@@ -75,7 +80,7 @@ const createLink = async (id, expiry) => {
 
 const deleteLink = async (id, linkId) => {
     $.ajax({
-        url: `${window.location.href}/link/delete/${linkId}`,
+        url: `${getLocation()}/link/delete/${linkId}`,
         type: 'DELETE',
         headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
         success: () => showDetails(id)
