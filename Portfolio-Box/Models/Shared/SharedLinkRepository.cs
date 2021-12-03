@@ -35,14 +35,17 @@ namespace Portfolio_Box.Models.Shared
             _appDBContext.SaveChanges();
         }
 
-        public void DeleteLinkById(int id)
+        public SharedFile? DeleteLinkById(int id)
         {
             SharedLink targetLink = GetLinkById(id);
             if (targetLink != null)
             {
                 _appDBContext.Links.Remove(targetLink);
                 _appDBContext.SaveChanges();
+                return targetLink.File;
             }
+
+            return null;
         }
     }
 }

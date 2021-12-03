@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Portfolio_Box.Models.Shared;
 using System;
 using static Portfolio_Box.Models.Shared.SharedLink;
@@ -27,7 +28,12 @@ namespace Portfolio_Box.Controllers
                 if (targetFile != null)
                 {
                     _sharedLinkRepository.SaveLink(new SharedLink(targetFile, expiresIn));
-                    return StatusCode(201);
+                    return new PartialViewResult()
+                    {
+                        ViewName = "_FileDetails",
+                        ViewData = new ViewDataDictionary<SharedFile>(ViewData, targetFile),
+                        StatusCode = 201
+                    };
                 }
             }
 
@@ -38,8 +44,17 @@ namespace Portfolio_Box.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            _sharedLinkRepository.DeleteLinkById(id);
-            return NoContent();
+            var file = _sharedLinkRepository.DeleteLinkById(id);
+            if (file != null)
+            {
+                return new PartialViewResult()
+                {
+                    ViewName = "_FileDetails",
+                    ViewData = new ViewDataDictionary<SharedFile>(ViewData, file),
+                };
+            }
+
+            return BadRequest();
         }
     }
 }

@@ -34,7 +34,8 @@ namespace Portfolio_Box
             services.AddHttpContextAccessor();
             services.AddSingleton(Configuration);
             services.AddScoped<CookieHandler>();
-            services.AddScoped(user => User.GetUser(user));
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped(provider => provider.GetService<IUserRepository>().GetUserByAccessToken());
             services.AddScoped<ISharedFileFactory, SharedFileFactory>();
             services.AddScoped<ISharedFileRepository, SharedFileRepository>();
             services.AddScoped<ISharedLinkRepository, SharedLinkRepository>();

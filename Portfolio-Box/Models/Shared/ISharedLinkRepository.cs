@@ -5,6 +5,6 @@ namespace Portfolio_Box.Models.Shared
     {
         public SharedLink GetLinkById(int id);
         public void SaveLink(SharedLink sharedLink);
-        public void DeleteLinkById(int id);
+        public SharedFile? DeleteLinkById(int id);
     }
 }

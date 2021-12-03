@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace Portfolio_Box.Models
 {
@@ -16,10 +14,8 @@ namespace Portfolio_Box.Models
         [Column("access_token")]
         public string AccessToken { get; private set; }
 
-        public static Token FindByAccessToken(AppDBContext ctx, string token)
-        {
-            return ctx.Tokens.FirstOrDefault(t => t.AccessToken == token);
-        }
+        [Column("access_token_expires_at")]
+        public DateTime AccessTokenExpiresAt { get; private set; }
 
         public static string ExtractAccessToken(string token)
         {

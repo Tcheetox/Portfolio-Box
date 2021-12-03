@@ -74,7 +74,7 @@ const createLink = async (id, expiry) => {
         url: `${getLocation()}/link/create?id=${id}&expiry=${expiry}`,
         type: 'POST',
         headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
-        success: () => showDetails(id)
+        success: results => $("#detailsModal").html(results)
     })
 }
 
@@ -83,7 +83,7 @@ const deleteLink = async (id, linkId) => {
         url: `${getLocation()}/link/delete/${linkId}`,
         type: 'DELETE',
         headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
-        success: () => showDetails(id)
+        success: results => $("#detailsModal").html(results)
     })
 }
 
