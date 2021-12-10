@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +11,6 @@ using Portfolio_Box.Attributes;
 using Portfolio_Box.Extensions;
 using Portfolio_Box.Models;
 using Portfolio_Box.Models.Shared;
-using Portfolio_Box.Models.User;
 using System;
 using System.Globalization;
 
@@ -32,6 +30,7 @@ namespace Portfolio_Box
         {
             services.AddDbContext<AppDBContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             services.AddHttpContextAccessor();
+
             services.AddSingleton(Configuration);
             services.AddScoped<CookieHandler>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -46,7 +45,6 @@ namespace Portfolio_Box
                 options.Limits.MaxRequestBodySize = Configuration.GetValue<long>("File:MaxBytes");
             });
 
-
             services.AddRazorPages(options =>
                 options.Conventions.AddPageApplicationModelConvention("/Index", model =>
                     model.Filters.Add(new AntiforgeryTokenCookieAttribute())));
@@ -56,9 +54,16 @@ namespace Portfolio_Box
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCsp(options => options
+                .BaseUris(s => s.Self())
+                .ObjectSources(s => s.None())
+                .ScriptSources(s => s.Self())
+                .ReportUris(s => s.Uris(Configuration.GetValue<string>("Hosting:CspReport"))));
+
             string basePath = new PathString(Configuration.GetValue<string>("Hosting:BasePath"));
             SharedFileExtension.BasePath = basePath;
             app.UsePathBase(basePath);
+            
 
             if (env.IsDevelopment())
             {
@@ -69,7 +74,7 @@ namespace Portfolio_Box
                 app.UseExceptionHandler("/Error");
             }
 
-            // app.UseHttpsRedirection(); -> Nginx handles it let's not use https through proxy_pass directive
+            // app.UseHttpsRedirection(); // -> Nginx handles it let's not use https through proxy_pass directive
             app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = ctx =>
@@ -80,7 +85,6 @@ namespace Portfolio_Box
                 }
             });
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
