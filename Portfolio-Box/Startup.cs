@@ -64,7 +64,6 @@ namespace Portfolio_Box
             SharedFileExtension.BasePath = basePath;
             app.UsePathBase(basePath);
             
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -1,12 +1,30 @@
 ﻿
-const restoreFileUploadDisplay = () => {
+$("#uploadButton").click(function () {
     $("#files").val("")
     displayState(false)
-}
+})
 
-const pickFile = () => {
+$("#dragArea").click(function () {
     $("#files").click()
-}
+})
+$("#dragArea").on("dragenter", function (e) {
+    e.preventDefault()
+    $(this).addClass("dragging")
+    $(".drag-area .message").html("<strong>Drop</strong> me here")
+})
+$("#dragArea").on("dragleave",function () {
+    const files = $("#files")[0].files
+    $(this).removeClass("dragging")
+    displayState(files.length > 0, files)})
+$("#dragArea").on("dragover", function (e) {
+    e.preventDefault()
+})
+$("#dragArea").on("drop", function (e) {
+    e.preventDefault()
+    $(this).removeClass("dragging")
+    $("#files")[0].files = e.originalEvent.dataTransfer.files
+    filesChanged()
+})
 
 const displayState = (valid, files = null) => {
     $(".drag-area .info").css({ color: "darkgray" })
@@ -25,28 +43,7 @@ const displayState = (valid, files = null) => {
     }
 }
 
-const onDragEnter = e => {
-    e.preventDefault()
-    $(".drag-area").addClass("dragging")
-    $(".drag-area .message").html("<strong>Drop</strong> me here")
-}
-
-const onDragHover = e => e.preventDefault()
-
-const onDragLeave = () => {
-    const files = $("#files")[0].files
-    $(".drag-area").removeClass("dragging")
-    displayState(files.length > 0, files)
-}
-
-const onDrop = e => {
-    e.preventDefault()
-    $(".drag-area").removeClass("dragging")
-    $("#files")[0].files = e.dataTransfer.files
-    fileChanged()
-}
- 
-const fileChanged = () => {
+const filesChanged = () => {
     const files = $("#files")[0].files
     if (files.length === 0) {
         displayState(false)
@@ -64,3 +61,4 @@ const fileChanged = () => {
         }
     }
 }
+$("#files").change(filesChanged)

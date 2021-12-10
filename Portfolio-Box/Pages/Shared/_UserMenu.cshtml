@@ -2,7 +2,7 @@
 
 @if (Model is AuthorizedUser && @ViewContext.ActionDescriptor.DisplayName == "/Index")
 {
-    <button type="button" id="uploadButton" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal" onclick="restoreFileUploadDisplay()">
+    <button type="button" id="uploadButton" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
         <span class="text-content">
             Upload
         </span>
@@ -12,20 +12,20 @@
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="UploadFile" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form id="uploadForm" class="upload" enctype="multipart/form-data" onsubmit="uploadFile(this);return false;">
+                <form id="uploadForm" class="upload" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h5 class="modal-title" id="UploadFile">Choose a file</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div id="dragArea" class="drag-area" ondrop="onDrop(event)" onclick="pickFile()" ondragenter="onDragEnter(event)" ondragleave="onDragLeave()" ondragover="onDragHover(event)">
+                        <div id="dragArea" class="drag-area">
                             <div class="content">
                                 <img alt="" src="~/media/upload.png" height="64" width="64">
                                 <span class="message"><strong>Drop</strong> a file or <strong>click</strong> to upload</span>
                                 <span class="info">Max file size 10GB</span>
                             </div>
                         </div>
-                        <input id="files" name="files" type="file" class="hidden" onchange="fileChanged()" multiple>
+                        <input id="files" name="files" type="file" class="hidden" multiple>
                     </div>
                     <div class="modal-footer">
                         <button id="submitUpload" type="submit" class="btn btn-primary" data-bs-dismiss="modal" disabled>Upload</button>

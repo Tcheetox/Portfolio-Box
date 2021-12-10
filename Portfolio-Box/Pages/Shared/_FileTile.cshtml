@@ -1,7 +1,7 @@
 ﻿@using Portfolio_Box.Extensions
 @model SharedFile
 
-<div id="fileTile-@Model.Id" class="file-tile" onclick="showDetails(@Model.Id)">
+<div id="fileTile-@Model.Id" class="file-tile" data-id="@Model.Id">
     <div class="file-icon">
         <img alt="@Model.Extension" width="54" height="54" src="@Model.GetIcon()">
     </div>

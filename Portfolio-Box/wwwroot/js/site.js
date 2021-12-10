@@ -11,6 +11,10 @@ const getCookie = name => {
     if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
+$("#uploadForm").submit(function (e) {
+    e.preventDefault()
+    uploadFile($(this)[0])
+})
 const uploadFile = async form => {
     $("#uploadButton").prop("disabled", true);
     $("#uploadButton .text-content").addClass("hidden")
@@ -28,16 +32,16 @@ const uploadFile = async form => {
     xhr.upload.onprogress = e => {
         const current = Math.round(100 * e.loaded / totalSize)
         if (current > progress) {
-            progressBar.css({ background: `linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(0,123,255,1) ${current - 3}%, rgba(255,255,255,1) ${current + 2}%, rgba(255,255,255,0) 100%)`})
+            progressBar.css({ background: `linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(0,123,255,1) ${current - 3}%, rgba(255,255,255,1) ${current + 2}%, rgba(255,255,255,0) 100%)` })
             progress = current
-        }    
+        }
     }
     xhr.open("POST", `${getLocation()}/file/upload`, true);
     xhr.setRequestHeader("RequestVerificationToken", getCookie('RequestVerificationToken'));
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE) {
             if (this.status === 201)
-                refreshFileList() // Reload partial _FileList to display updated results 
+                $("#fileList").load(`${getLocation()}?handler=FileListPartial`) // Reload partial _FileList to display updated results
 
             progressBar.css({ background: `linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(255,255,255,0) 0%)` })
             $("#uploadButton").prop("disabled", false)
@@ -48,46 +52,49 @@ const uploadFile = async form => {
     xhr.send(new FormData(form));
 }
 
-const refreshFileList = () => $("#fileList").load(`${getLocation()}?handler=FileListPartial`)
-
 const adjustDownloadUrl = () => {
     const uri = $("#downloadUrl").val()
     $("#downloadUrl").val(`${getLocation()}/file/download/${uri}`)
 }
 
-const showDetails = id => {
+$("#fileList").on("click", ".file-tile", function () {
     $("#detailsModal").modal("show")
-    $("#detailsModal").load(`${getLocation()}/file/details/${id}`, adjustDownloadUrl)
-}
+    $("#detailsModal").load(`${getLocation()}/file/details/${$(this).data("id")}`, adjustDownloadUrl)
+})
 
-const deleteFile = id => {
+
+$("#detailsModal").on("click", "#deleteFile", function () {
     $.ajax({
-        url: `${getLocation()}/file/delete/${id}`,
+        url: `${getLocation()}/file/delete/${$(this).data("id")}`,
         type: 'DELETE',
         headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
-        success: () => $(`#fileTile-${id}`).remove()
+        success: () => $(`#fileTile-${$(this).data("id")}`).remove()
     })
-}
+})
 
-const createLink = async (id, expiry) => {
+$("#detailsModal").on("submit", "#createLinkForm", function (e) {
+    e.preventDefault()
     $.ajax({
-        url: `${getLocation()}/link/create?id=${id}&expiry=${expiry}`,
+        url: `${getLocation()}/link/create?id=${$(this).data("id")}&expiry=${$('#expiresIn').val()}`,
         type: 'POST',
         headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
-        success: results => $("#detailsModal").html(results)
+        success: results => {
+            $("#detailsModal").html(results)
+            adjustDownloadUrl()
+        }
     })
-}
+})
 
-const deleteLink = async (id, linkId) => {
+$("#detailsModal").on("click", "#deleteLink", function () {
     $.ajax({
-        url: `${getLocation()}/link/delete/${linkId}`,
+        url: `${getLocation()}/link/delete/${$(this).data("id")}`,
         type: 'DELETE',
         headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
         success: results => $("#detailsModal").html(results)
     })
-}
+})
 
-const copyToClipboard = () => {
-    navigator.clipboard.writeText($("#downloadUrl").val())
+$("#detailsModal").on("click", "#downloadUrl", function () {
+    navigator.clipboard.writeText($(this).val())
     $("#clipMe").text("(copied!)")
-}
+})

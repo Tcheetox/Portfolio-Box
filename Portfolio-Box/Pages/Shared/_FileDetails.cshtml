@@ -15,7 +15,7 @@
                     <div class="row">
                         <div class="col-md-7">
                             <label for="downloadUrl" class="form-label">Download URL <small id="clipMe">(click to copy)</small></label>
-                            <input for="downloadUrl" onclick="copyToClipboard()" type="text" class="form-control clipboardable" id="downloadUrl" value="@Model.Link.DownloadUri" readonly>
+                            <input for="downloadUrl" type="text" class="form-control clipboardable" id="downloadUrl" value="@Model.Link.DownloadUri" readonly>
                         </div>
                         <div class="col-md-4">
                             @if (Model.Link.IsExpired)
@@ -29,7 +29,7 @@
                             <input for="expiry" type="text" class="form-control" value="@Model.Link.Expiration" readonly>
                         </div>
                         <div class="col-md-1 align-self-end">
-                            <button type="button" class="unstyled handle-link" onclick="deleteLink(@Model.Id, @Model.Link.Id)">
+                            <button type="button" class="unstyled handle-link" id="deleteLink" data-id="@Model.Link.Id">
                                 <img class="scale" alt="" width="24" height="24" src="~/media/bin.png">
                             </button>
                         </div>
@@ -37,7 +37,7 @@
                 }
                 else
                 {
-                    <form id="createLinkForm" onsubmit="createLink(@Model.Id, $('#expiresIn').val()); return false;">
+                    <form id="createLinkForm" data-id="@Model.Id">
                         <input for="fileId" type="hidden" id="fileId" value="@Model.Id"/>
                         <div class="row">
                             <div class="col-md-7">
@@ -58,7 +58,7 @@
                 }
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteFile(@Model.Id)">Delete</button>
+                <button type="button" class="btn btn-danger machin" data-bs-dismiss="modal" id="deleteFile" data-id="@Model.Id">Delete</button>
                 <a class="btn btn-primary" asp-controller="File" asp-action="DownloadById" asp-route-id="@Model.Id">Download</a>
             </div>
         }
