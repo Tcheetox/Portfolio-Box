@@ -12,10 +12,11 @@ $("#dragArea").on("dragenter", function (e) {
     $(this).addClass("dragging")
     $(".drag-area .message").html("<strong>Drop</strong> me here")
 })
-$("#dragArea").on("dragleave",function () {
+$("#dragArea").on("dragleave", function () {
     const files = $("#files")[0].files
     $(this).removeClass("dragging")
-    displayState(files.length > 0, files)})
+    displayState(files.length > 0, files)
+})
 $("#dragArea").on("dragover", function (e) {
     e.preventDefault()
 })

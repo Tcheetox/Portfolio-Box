@@ -12,15 +12,11 @@ namespace Portfolio_Box.Attributes
             var antiforgery = context.HttpContext.RequestServices.GetService<IAntiforgery>();
             // Send the request token as a JavaScript-readable cookie
             var tokens = antiforgery.GetAndStoreTokens(context.HttpContext);
-            
+
             context.HttpContext.Response.Cookies.Append(
                 "RequestVerificationToken",
                 tokens.RequestToken,
-                new CookieOptions() { HttpOnly = false });
-        }
-
-        public override void OnResultExecuted(ResultExecutedContext context)
-        {
+                new CookieOptions() { HttpOnly = false, SameSite = SameSiteMode.Strict });
         }
     }
 }

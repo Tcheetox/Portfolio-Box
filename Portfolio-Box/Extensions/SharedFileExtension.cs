@@ -8,7 +8,7 @@ namespace Portfolio_Box.Extensions
         public static string? BasePath { get; set; }
 
         public static string GetSize(this SharedFile sharedFile)
-        {   
+        {
             double gb = 1073741824;
             if (sharedFile.Length > gb)
                 return (sharedFile.Length / gb).ToString("0.## GB"); // Display as Gigabytes
