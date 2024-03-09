@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,12 @@ namespace Portfolio_Box
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddDbContext<AppDBContext>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")!));
+			services.AddDbContext<AppDBContext>(options =>
+			{
+				var connectionString = Configuration.GetConnectionString("DefaultConnection")!;
+				options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+			});
+
 			services.AddHttpContextAccessor();
 
 			services.AddSingleton(Configuration);
@@ -65,6 +71,18 @@ namespace Portfolio_Box
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
+
+				// I'd rather use it in production on-demand (avoid conflicting with other shared-db project's migration).
+				//using var serviceScope = app
+				//	.ApplicationServices
+				//	.GetService<IServiceScopeFactory>()!
+				//	.CreateScope();
+				//var database = serviceScope
+				//	.ServiceProvider
+				//	.GetRequiredService<AppDBContext>()
+				//	.Database;
+				//database.EnsureCreated();
+				//database.Migrate();
 			}
 			else
 			{

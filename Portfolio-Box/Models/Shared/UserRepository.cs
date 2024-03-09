@@ -15,7 +15,7 @@ namespace Portfolio_Box.Models.Shared
 				return new AnonymousUser();
 
 			string accessToken = Token.ExtractAccessToken(cookie.Value);
-
+;
 			var u = (from token in _appDBContext.Tokens
 					 join user in _appDBContext.Users on token.UserId equals user.Id
 					 where token.AccessToken == accessToken && token.AccessTokenExpiresAt > DateTime.Now
