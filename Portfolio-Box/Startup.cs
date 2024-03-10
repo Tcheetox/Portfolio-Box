@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Net;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -102,6 +103,22 @@ namespace Portfolio_Box
 			app.UseRouting();
 			app.UseEndpoints(endpoints =>
 			{
+				endpoints.MapGet("/healthcheck", async context =>
+				{
+					var ipAddress = context.Connection.RemoteIpAddress!;
+					var isLocal = IPAddress.IsLoopback(ipAddress) || ipAddress.Equals(IPAddress.Loopback);
+
+					Console.WriteLine(ipAddress);
+					Console.WriteLine(isLocal);
+
+					if (isLocal)
+					{
+						context.Response.StatusCode = StatusCodes.Status403Forbidden;
+						return;
+					}
+
+					await context.Response.WriteAsync("Service is healthy");
+				});
 				endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 				endpoints.MapRazorPages();
 			});
