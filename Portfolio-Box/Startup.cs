@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Builder;
@@ -105,13 +106,15 @@ namespace Portfolio_Box
 			{
 				endpoints.MapGet("/healthcheck", async context =>
 				{
-					var ipAddress = context.Connection.RemoteIpAddress!;
-					var isLocal = IPAddress.IsLoopback(ipAddress) || ipAddress.Equals(IPAddress.Loopback);
+					string? forward = context.Request.Headers["X-Forwarded-For"];
+					var ipAddress = forward?.Split(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
+
+					var isAllowed = env.IsDevelopment();
 
 					Console.WriteLine(ipAddress);
-					Console.WriteLine(isLocal);
+					Console.WriteLine(isAllowed);
 
-					if (isLocal)
+					if (!isAllowed)
 					{
 						context.Response.StatusCode = StatusCodes.Status403Forbidden;
 						return;
