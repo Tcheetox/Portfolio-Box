@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -108,11 +109,7 @@ namespace Portfolio_Box
 				{
 					string? forward = context.Request.Headers["X-Forwarded-For"];
 					var ipAddress = forward?.Split(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
-
-					var isAllowed = env.IsDevelopment();
-
-					Console.WriteLine(ipAddress);
-					Console.WriteLine(isAllowed);
+					var isAllowed = env.IsDevelopment() || Configuration.GetValue("Hosting:Whitelisted", string.Empty)!.Equals(ipAddress, StringComparison.OrdinalIgnoreCase);
 
 					if (!isAllowed)
 					{
