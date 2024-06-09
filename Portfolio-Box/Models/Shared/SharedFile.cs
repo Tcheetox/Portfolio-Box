@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 
@@ -6,7 +7,9 @@ namespace Portfolio_Box.Models.Shared
 {
 	public class SharedFile(int userId, string diskPath, string originalName, long length)
 	{
-		public int Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 		public int UserId { get; set; } = userId;
 		public string DiskPath { get; set; } = diskPath;
 		public string OriginalName { get; set; } = originalName;

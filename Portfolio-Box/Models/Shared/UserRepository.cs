@@ -1,16 +1,28 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Portfolio_Box.Models.User;
 
 namespace Portfolio_Box.Models.Shared
 {
-	public class UserRepository(AppDBContext appDBContext, CookieHandler cookieHandler) : IUserRepository
+	public class UserRepository(AppDBContext appDBContext, CookieHandler cookieHandler, IWebHostEnvironment environment) : IUserRepository
 	{
 		private readonly AppDBContext _appDBContext = appDBContext;
 		private readonly CookieHandler _cookieHandler = cookieHandler;
 
 		public User.User GetUserByAccessToken()
 		{
+#if DEBUG
+            if (environment.IsDevelopment())
+			{
+				return (from user in _appDBContext.Users
+						where user.Id == 1
+						select user)
+						.FirstOrDefault() ?? new AnonymousUser();
+            }
+#endif
+
 			if (!_cookieHandler.TryGetCookie(out var cookie))
 				return new AnonymousUser();
 

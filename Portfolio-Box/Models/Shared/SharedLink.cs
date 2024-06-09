@@ -7,8 +7,10 @@ namespace Portfolio_Box.Models.Shared
 	public class SharedLink
 	{
 		[Key]
-		public int Id { get; set; }
-		public SharedFile? File { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        [ForeignKey("FileId")]
+        public SharedFile? File { get; set; }
 		public int FileId { get; set; }
 
 		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]

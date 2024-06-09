@@ -76,16 +76,16 @@ namespace Portfolio_Box
 				app.UseDeveloperExceptionPage();
 
 				// I'd rather use it in production on-demand (avoid conflicting with other shared-db project's migration).
-				//using var serviceScope = app
-				//	.ApplicationServices
-				//	.GetService<IServiceScopeFactory>()!
-				//	.CreateScope();
-				//var database = serviceScope
-				//	.ServiceProvider
-				//	.GetRequiredService<AppDBContext>()
-				//	.Database;
-				//database.EnsureCreated();
-				//database.Migrate();
+				using var serviceScope = app
+					.ApplicationServices
+					.GetService<IServiceScopeFactory>()!
+					.CreateScope();
+				var database = serviceScope
+					.ServiceProvider
+					.GetRequiredService<AppDBContext>()
+					.Database;
+				database.EnsureCreated();
+				database.Migrate();
 			}
 			else
 			{

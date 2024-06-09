@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Portfolio_Box.Models
@@ -6,9 +7,12 @@ namespace Portfolio_Box.Models
 	[Table("oauth_tokens")]
 	public class Token
 	{
-		public int Id { get; private set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; private set; }
 
-		[Column("user_id")]
+        [ForeignKey("User")]
+        [Column("user_id")]
 		public int UserId { get; private set; }
 
 		[Column("access_token")]

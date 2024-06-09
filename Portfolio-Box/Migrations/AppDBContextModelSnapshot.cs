@@ -2,8 +2,11 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Portfolio_Box.Models;
+
+#nullable disable
 
 namespace Portfolio_Box.Migrations
 {
@@ -14,8 +17,10 @@ namespace Portfolio_Box.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.21")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Portfolio_Box.Models.Shared.SharedFile", b =>
                 {
@@ -23,19 +28,21 @@ namespace Portfolio_Box.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("DiskPath")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<long>("Length")
                         .HasColumnType("bigint");
 
                     b.Property<string>("OriginalName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("UploadedOn")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -53,19 +60,20 @@ namespace Portfolio_Box.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("DownloadUri")
-                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("varchar(767)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("Expiration")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("FileId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -84,14 +92,19 @@ namespace Portfolio_Box.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("AccessToken")
-                        .IsRequired()
-                        .HasColumnName("access_token")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext")
+                        .HasColumnName("access_token");
+
+                    b.Property<DateTime>("AccessTokenExpiresAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("access_token_expires_at");
 
                     b.Property<int>("UserId")
-                        .HasColumnName("user_id")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
@@ -104,23 +117,27 @@ namespace Portfolio_Box.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(21)
+                        .HasColumnType("varchar(21)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Nickname")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.ToTable("users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Portfolio_Box.Models.User.AnonymousUser", b =>
@@ -157,6 +174,18 @@ namespace Portfolio_Box.Migrations
                         .HasForeignKey("Portfolio_Box.Models.Shared.SharedLink", "FileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("File");
+                });
+
+            modelBuilder.Entity("Portfolio_Box.Models.Shared.SharedFile", b =>
+                {
+                    b.Navigation("Link");
+                });
+
+            modelBuilder.Entity("Portfolio_Box.Models.User.User", b =>
+                {
+                    b.Navigation("Files");
                 });
 #pragma warning restore 612, 618
         }
