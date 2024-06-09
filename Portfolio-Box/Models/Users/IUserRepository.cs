@@ -1,6 +1,4 @@
-﻿using Portfolio_Box.Models.Users;
-
-namespace Portfolio_Box.Models.Shared
+﻿namespace Portfolio_Box.Models.Users
 {
     public interface IUserRepository
     {

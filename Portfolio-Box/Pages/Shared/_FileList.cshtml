@@ -1,6 +1,9 @@
 ﻿@using Portfolio_Box.Extensions
 @using Portfolio_Box.Models.Files
 @model FileRepository
+@{
+    ViewData["MediaBasePath"] = Model.MediaBasePath;
+}
 
 @foreach(File file in Model.AllFiles)
 {

@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Portfolio_Box.Extensions;
 using Portfolio_Box.Models.Users;
 
 namespace Portfolio_Box.Models.Files
 {
     public class FileRepository : IFileRepository
     {
+        public readonly string MediaBasePath;
+
         private readonly AppDBContext _appDBContext;
         private readonly User _user;
         private readonly IFileFactory _sharedFileFactory;
 
-        public FileRepository(AppDBContext dbContext, User user, IFileFactory fileFactory)
+        public FileRepository(AppDBContext dbContext, User user, IFileFactory fileFactory, IConfiguration configuration)
         {
+            MediaBasePath = configuration.GetMediaBasePath();
+
             _appDBContext = dbContext;
             _user = user;
             _sharedFileFactory = fileFactory;

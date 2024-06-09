@@ -48,7 +48,7 @@ namespace Portfolio_Box.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     FileId = table.Column<int>(type: "int", nullable: false),
-                    DownloadUri = table.Column<string>(type: "varchar(255)", nullable: true)
+                    DownloadUri = table.Column<string>(type: "varchar(255)", nullable: true, defaultValueSql: "UUID()")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Expiration = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false)

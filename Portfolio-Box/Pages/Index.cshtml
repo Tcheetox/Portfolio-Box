@@ -1,13 +1,10 @@
 ﻿@page
 @model Portfolio_Box.Pages.IndexModel
-@{
-    ViewData["MediaBasePath"] = Model.MediaBasePath;
-}
 
 <div class="text-center">
     <h2 class="title">My files library</h2>
     <div id="fileList" class="file-list">
-        <partial name="_FileList" model="Model.SharedFileRepository" />
+        <partial name="_FileList" model="Model.FileRepository" />
     </div>
 </div>
 

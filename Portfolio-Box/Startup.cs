@@ -15,7 +15,7 @@ using Portfolio_Box.Extensions;
 using Portfolio_Box.Models;
 using Portfolio_Box.Models.Files;
 using Portfolio_Box.Models.Links;
-using Portfolio_Box.Models.Shared;
+using Portfolio_Box.Models.Users;
 
 namespace Portfolio_Box
 {

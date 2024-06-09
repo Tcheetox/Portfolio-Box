@@ -135,7 +135,7 @@ namespace Portfolio_Box.Migrations
 
                     b.ToTable("users");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("AuthorizedUser");
 
                     b.UseTphMappingStrategy();
                 });

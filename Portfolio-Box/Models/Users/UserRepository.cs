@@ -2,9 +2,8 @@
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Portfolio_Box.Models.Users;
 
-namespace Portfolio_Box.Models.Shared
+namespace Portfolio_Box.Models.Users
 {
     public class UserRepository : IUserRepository
     {
@@ -27,12 +26,12 @@ namespace Portfolio_Box.Models.Shared
                 return (from user in _appDBContext.Users
                         where user.Id == 1
                         select user)
-                        .FirstOrDefault() ?? new AnonymousUser();
+                        .FirstOrDefault() ?? AnonymousUser.Instance;
             }
 #endif
 
             if (!_cookieHandler.TryGetCookie(out var cookie))
-                return new AnonymousUser();
+                return AnonymousUser.Instance;
 
             string accessToken = Token.ExtractAccessToken(cookie.Value);
             var u = (from token in _appDBContext.Tokens
@@ -41,7 +40,7 @@ namespace Portfolio_Box.Models.Shared
                      select user)
                      .FirstOrDefault();
 
-            return u ?? new AnonymousUser();
+            return u ?? AnonymousUser.Instance;
         }
     }
 }

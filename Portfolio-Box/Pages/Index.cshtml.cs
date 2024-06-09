@@ -13,19 +13,17 @@ namespace Portfolio_Box.Pages
 {
     public class IndexModel : PageModel
     {
-        public readonly IFileRepository SharedFileRepository;
+        public readonly IFileRepository FileRepository;
         public readonly CookieHandler CookieHandler;
         public new readonly User User;
         public readonly Uri RedirectUri;
         public readonly Uri DashboardUri;
-        public readonly string MediaBasePath;
 
-        public IndexModel(IFileRepository sharedFileRepository, IConfiguration configuration, User user, CookieHandler cookieHandler)
+        public IndexModel(IFileRepository fileRepository, IConfiguration configuration, User user, CookieHandler cookieHandler)
         {
-            SharedFileRepository = sharedFileRepository;
+            FileRepository = fileRepository;
             User = user;
             CookieHandler = cookieHandler;
-            MediaBasePath = configuration.GetMediaBasePath();
 
             var portfolioUri = new Uri(configuration.GetValue<string>("Hosting:Portfolio")!);
             RedirectUri = portfolioUri.Append(configuration.GetValue<string>("Hosting:Redirect")!);
@@ -49,12 +47,10 @@ namespace Portfolio_Box.Pages
         }
 
         public PartialViewResult OnGetFileListPartial()
-        {
-            return new PartialViewResult()
+            => new()
             {
                 ViewName = "_FileList",
-                ViewData = new ViewDataDictionary<IFileRepository>(ViewData, SharedFileRepository)
+                ViewData = new ViewDataDictionary<IFileRepository>(ViewData, FileRepository)
             };
-        }
     }
 }
