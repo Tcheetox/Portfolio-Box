@@ -1,7 +1,8 @@
 ﻿@using Portfolio_Box.Extensions
-@model SharedFileRepository
+@using Portfolio_Box.Models.Files
+@model FileRepository
 
-@foreach(SharedFile file in Model.AllFiles)
+@foreach(File file in Model.AllFiles)
 {
     <partial name="_FileTile" model="file" />
 }

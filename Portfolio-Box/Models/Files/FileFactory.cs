@@ -6,22 +6,23 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Portfolio_Box.Models.Users;
 
-namespace Portfolio_Box.Models.Shared
+namespace Portfolio_Box.Models.Files
 {
-    public class SharedFileFactory(ILogger<SharedFileFactory> logger, User.User user, IConfiguration configuration) : ISharedFileFactory
+    public class FileFactory(ILogger<FileFactory> logger, User user, IConfiguration configuration) : IFileFactory
     {
         private readonly IConfiguration _configuration = configuration;
-        private readonly ILogger<SharedFileFactory> _logger = logger;
-        private readonly User.User _user = user;
+        private readonly ILogger<FileFactory> _logger = logger;
+        private readonly User _user = user;
 
-        public void DeleteFile(SharedFile sharedFile)
+        public void DeleteFile(File sharedFile)
         {
             Task.Run(() =>
             {
                 try
                 {
-                    File.Delete(sharedFile.DiskPath);
+                    System.IO.File.Delete(sharedFile.DiskPath);
                     _logger.LogInformation("File '{OriginalName}' deleted from disk by user '{Nickname}' ({Id})",
                         sharedFile.OriginalName, _user.Nickname, _user.Id);
                 }
@@ -33,19 +34,19 @@ namespace Portfolio_Box.Models.Shared
             });
         }
 
-        public async Task<SharedFile?> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState)
+        public async Task<File?> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState)
         {
-            SharedFile? sharedFile = null;
+            File? sharedFile = null;
             var trustedFileNameForDisplay = WebUtility.HtmlEncode(contentDisposition.FileName.Value) ?? string.Empty;
             var trustedFileNameForFileStorage = Path.GetRandomFileName();
             var targetFilePath = _configuration.GetValue<string>("File:StorePath") ?? string.Empty;
 
-            using (FileStream targetStream = File.Create(Path.Combine(targetFilePath, trustedFileNameForFileStorage)))
+            using (FileStream targetStream = System.IO.File.Create(Path.Combine(targetFilePath, trustedFileNameForFileStorage)))
             {
                 try
                 {
                     await section.Body.CopyToAsync(targetStream);
-                    sharedFile = new SharedFile(_user.Id, Path.Combine(targetFilePath, trustedFileNameForFileStorage), trustedFileNameForDisplay, targetStream.Length);
+                    sharedFile = new File(_user.Id, Path.Combine(targetFilePath, trustedFileNameForFileStorage), trustedFileNameForDisplay, targetStream.Length);
                 }
                 catch (IOException ex)
                 {

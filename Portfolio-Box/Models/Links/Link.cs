@@ -1,16 +1,17 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Portfolio_Box.Models.Files;
 
-namespace Portfolio_Box.Models.Shared
+namespace Portfolio_Box.Models.Links
 {
-    public class SharedLink
+    public class Link
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [ForeignKey("FileId")]
-        public SharedFile? File { get; set; }
+        public File? File { get; set; }
         public int FileId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
@@ -38,7 +39,7 @@ namespace Portfolio_Box.Models.Shared
             Never = 5
         }
 
-        public SharedLink(int fileId, string downloadUri, DateTime expiration, DateTime updatedOn)
+        public Link(int fileId, string downloadUri, DateTime expiration, DateTime updatedOn)
         {
             FileId = fileId;
             DownloadUri = downloadUri;
@@ -46,7 +47,7 @@ namespace Portfolio_Box.Models.Shared
             UpdatedOn = updatedOn;
         }
 
-        public SharedLink(SharedFile file, ExpiresIn expiryOption)
+        public Link(File file, ExpiresIn expiryOption)
         {
             FileId = file.Id;
             File = file;
@@ -71,7 +72,7 @@ namespace Portfolio_Box.Models.Shared
             }
         }
 
-        public void UpdateFrom(SharedLink sharedLink)
+        public void UpdateFrom(Link sharedLink)
         {
             DownloadUri = sharedLink.DownloadUri;
             Expiration = sharedLink.Expiration;

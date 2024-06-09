@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Portfolio_Box.Models.User;
+using Portfolio_Box.Models.Users;
 
 namespace Portfolio_Box.Pages
 {

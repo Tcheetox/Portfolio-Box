@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Portfolio_Box.Models.Shared;
+using Portfolio_Box.Models.Files;
 
-namespace Portfolio_Box.Models.User
+namespace Portfolio_Box.Models.Users
 {
     [Table("users")]
     public abstract class User
@@ -14,6 +14,6 @@ namespace Portfolio_Box.Models.User
         public abstract string? Nickname { get; set; }
         [Required]
         public abstract string Email { get; set; }
-        public abstract List<SharedFile> Files { get; set; }
+        public abstract List<File> Files { get; set; }
     }
 }

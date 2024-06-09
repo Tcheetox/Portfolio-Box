@@ -1,4 +1,4 @@
-﻿using Portfolio_Box.Models.Shared;
+﻿using Portfolio_Box.Models.Files;
 
 namespace Portfolio_Box.Extensions
 {
@@ -6,7 +6,7 @@ namespace Portfolio_Box.Extensions
     {
         public static string? BasePath { get; set; }
 
-        public static string GetSize(this SharedFile sharedFile)
+        public static string GetSize(this File sharedFile)
         {
             double gb = 1073741824;
             if (sharedFile.Length > gb)
@@ -15,7 +15,7 @@ namespace Portfolio_Box.Extensions
                 return (sharedFile.Length / (double)1048576).ToString("0.## MB"); // Display as Megabytes
         }
 
-        public static string GetIcon(this SharedFile sharedFile)
+        public static string GetIcon(this File sharedFile)
         {
             string file = sharedFile.Extension.ToLowerInvariant() switch
             {

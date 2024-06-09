@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using Portfolio_Box.Models.Shared;
-using Portfolio_Box.Models.User;
+using Portfolio_Box.Models.Files;
+using Portfolio_Box.Models.Users;
 using Portfolio_Box.Pages;
 using Portfolio_Box.Utilities;
 
@@ -16,11 +16,11 @@ namespace Portfolio_Box.Controllers
     public class FileController : Controller
     {
         private readonly ILogger<FileController> _logger;
-        private readonly ISharedFileRepository _sharedFileRepository;
-        private readonly ISharedFileFactory _sharedFileFactory;
+        private readonly IFileRepository _sharedFileRepository;
+        private readonly IFileFactory _sharedFileFactory;
         private readonly User _user;
 
-        public FileController(ILogger<FileController> logger, User user, ISharedFileRepository sharedFileRepository, ISharedFileFactory sharedFileFactory)
+        public FileController(ILogger<FileController> logger, User user, IFileRepository sharedFileRepository, IFileFactory sharedFileFactory)
         {
             _logger = logger;
             _user = user;
@@ -61,7 +61,7 @@ namespace Portfolio_Box.Controllers
             return new PartialViewResult()
             {
                 ViewName = "_FileDetails",
-                ViewData = new ViewDataDictionary<SharedFile>(ViewData, file)
+                ViewData = new ViewDataDictionary<File>(ViewData, file)
             };
         }
 
@@ -96,7 +96,7 @@ namespace Portfolio_Box.Controllers
             MultipartReader reader = new(boundary, HttpContext.Request.Body);
             MultipartSection? section = await reader.ReadNextSectionAsync();
 
-            List<SharedFile> uploadedFiles = [];
+            List<File> uploadedFiles = [];
             while (section is not null)
             {
                 if (ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition))
@@ -108,7 +108,7 @@ namespace Portfolio_Box.Controllers
                     }
                     else
                     {
-                        SharedFile? file = await _sharedFileFactory.TryCreateFile(contentDisposition, section, ModelState);
+                        File? file = await _sharedFileFactory.TryCreateFile(contentDisposition, section, ModelState);
                         if (file != null)
                         {
                             uploadedFiles.Add(file);

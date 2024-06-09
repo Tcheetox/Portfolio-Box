@@ -1,17 +1,18 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Portfolio_Box.Models.Shared;
-using static Portfolio_Box.Models.Shared.SharedLink;
+using Portfolio_Box.Models.Files;
+using Portfolio_Box.Models.Links;
+using static Portfolio_Box.Models.Links.Link;
 
 namespace Portfolio_Box.Controllers
 {
     public class LinkController : Controller
     {
-        private readonly ISharedLinkRepository _sharedLinkRepository;
-        private readonly ISharedFileRepository _sharedFileRepository;
+        private readonly ILinkRepository _sharedLinkRepository;
+        private readonly IFileRepository _sharedFileRepository;
 
-        public LinkController(ISharedLinkRepository sharedLinkRepository, ISharedFileRepository sharedFileRepository)
+        public LinkController(ILinkRepository sharedLinkRepository, IFileRepository sharedFileRepository)
         {
             _sharedFileRepository = sharedFileRepository;
             _sharedLinkRepository = sharedLinkRepository;
@@ -26,11 +27,11 @@ namespace Portfolio_Box.Controllers
                 var targetFile = _sharedFileRepository.GetFileById(id);
                 if (targetFile is not null)
                 {
-                    _sharedLinkRepository.SaveLink(new SharedLink(targetFile, expiresIn));
+                    _sharedLinkRepository.SaveLink(new Link(targetFile, expiresIn));
                     return new PartialViewResult()
                     {
                         ViewName = "_FileDetails",
-                        ViewData = new ViewDataDictionary<SharedFile>(ViewData, targetFile),
+                        ViewData = new ViewDataDictionary<File>(ViewData, targetFile),
                         StatusCode = 201
                     };
                 }
@@ -50,7 +51,7 @@ namespace Portfolio_Box.Controllers
             return new PartialViewResult()
             {
                 ViewName = "_FileDetails",
-                ViewData = new ViewDataDictionary<SharedFile>(ViewData, file),
+                ViewData = new ViewDataDictionary<File>(ViewData, file),
             };
         }
     }

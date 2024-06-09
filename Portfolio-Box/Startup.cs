@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Portfolio_Box.Attributes;
 using Portfolio_Box.Extensions;
 using Portfolio_Box.Models;
+using Portfolio_Box.Models.Files;
+using Portfolio_Box.Models.Links;
 using Portfolio_Box.Models.Shared;
 
 namespace Portfolio_Box
@@ -39,9 +41,9 @@ namespace Portfolio_Box
             services.AddScoped<CookieHandler>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped(p => p.GetService<IUserRepository>()!.GetUserByAccessToken());
-            services.AddScoped<ISharedFileFactory, SharedFileFactory>();
-            services.AddScoped<ISharedFileRepository, SharedFileRepository>();
-            services.AddScoped<ISharedLinkRepository, SharedLinkRepository>();
+            services.AddScoped<IFileFactory, FileFactory>();
+            services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<ILinkRepository, LinkRepository>();
             services.AddControllers();
 
             services.Configure<KestrelServerOptions>(o => o.Limits.MaxRequestBodySize = Configuration.GetValue<long>("File:MaxBytes"));

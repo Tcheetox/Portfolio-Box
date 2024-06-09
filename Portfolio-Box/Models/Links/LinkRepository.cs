@@ -1,13 +1,14 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Portfolio_Box.Models.Files;
 
-namespace Portfolio_Box.Models.Shared
+namespace Portfolio_Box.Models.Links
 {
-    public class SharedLinkRepository(AppDBContext appDBContext) : ISharedLinkRepository
+    public class LinkRepository(AppDBContext appDBContext) : ILinkRepository
     {
         private readonly AppDBContext _appDBContext = appDBContext;
 
-        public SharedLink? GetLinkById(int id)
+        public Link? GetLinkById(int id)
             => (from l in _appDBContext.Links
                 where l.Id == id
                 select l)
@@ -15,7 +16,7 @@ namespace Portfolio_Box.Models.Shared
             .FirstOrDefault();
 
 
-        public void SaveLink(SharedLink sharedLink)
+        public void SaveLink(Link sharedLink)
         {
             if (sharedLink.File?.Link is not null)
             {
@@ -29,7 +30,7 @@ namespace Portfolio_Box.Models.Shared
             _appDBContext.SaveChanges();
         }
 
-        public SharedFile? DeleteLinkById(int id)
+        public File? DeleteLinkById(int id)
         {
             var targetLink = GetLinkById(id);
             if (targetLink is not null)

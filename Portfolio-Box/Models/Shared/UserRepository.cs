@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Portfolio_Box.Models.User;
+using Portfolio_Box.Models.Users;
 
 namespace Portfolio_Box.Models.Shared
 {
@@ -11,7 +11,7 @@ namespace Portfolio_Box.Models.Shared
         private readonly AppDBContext _appDBContext = appDBContext;
         private readonly CookieHandler _cookieHandler = cookieHandler;
 
-        public User.User GetUserByAccessToken()
+        public User GetUserByAccessToken()
         {
 #if DEBUG
             if (environment.IsDevelopment())
