@@ -6,7 +6,7 @@ using Microsoft.Net.Http.Headers;
 namespace Portfolio_Box.Utilities
 {
     // READ MORE: https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0
-    public static class MultipartRequestHelper
+    public static class MultipartRequestUtility
     {
         // Content-Type: multipart/form-data; boundary="----WebKitFormBoundarymx2fSWqWSd0OxQqq"
         // The spec at https://tools.ietf.org/html/rfc2046#section-5.1 states that 70 characters is a reasonable limit.

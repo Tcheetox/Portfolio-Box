@@ -4,9 +4,14 @@ using Portfolio_Box.Models.Files;
 
 namespace Portfolio_Box.Models.Links
 {
-    public class LinkRepository(AppDBContext appDBContext) : ILinkRepository
+    public class LinkRepository : ILinkRepository
     {
-        private readonly AppDBContext _appDBContext = appDBContext;
+        private readonly AppDBContext _appDBContext;
+
+        public LinkRepository(AppDBContext appDBContext)
+        {
+            _appDBContext = appDBContext;
+        }
 
         public Link? GetLinkById(int id)
             => (from l in _appDBContext.Links

@@ -2,36 +2,37 @@
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Portfolio_Box.Models.Files;
-using Portfolio_Box.Models.Users;
-using Portfolio_Box.Pages;
 using Portfolio_Box.Utilities;
 
 namespace Portfolio_Box.Controllers
 {
-    public class FileController : Controller
+    public class FileController : ControllerBase
     {
         private readonly ILogger<FileController> _logger;
-        private readonly IFileRepository _sharedFileRepository;
-        private readonly IFileFactory _sharedFileFactory;
-        private readonly User _user;
+        private readonly IFileRepository _fileRepository;
+        private readonly IFileFactory _fileFactory;
 
-        public FileController(ILogger<FileController> logger, User user, IFileRepository sharedFileRepository, IFileFactory sharedFileFactory)
+        public FileController(
+            ILogger<FileController> logger,
+            IFileRepository fileRepository,
+            IFileFactory fileFactory,
+            IConfiguration configuration)
+            : base(configuration)
         {
             _logger = logger;
-            _user = user;
-            _sharedFileFactory = sharedFileFactory;
-            _sharedFileRepository = sharedFileRepository;
+            _fileFactory = fileFactory;
+            _fileRepository = fileRepository;
         }
 
         [HttpGet]
         public IActionResult DownloadById(int id)
         {
-            var file = _sharedFileRepository.GetFileById(id);
+            var file = _fileRepository.GetFileById(id);
             if (file is null)
                 return NotFound();
 
@@ -42,11 +43,11 @@ namespace Portfolio_Box.Controllers
         public IActionResult Download(string id)
         {
             if (string.IsNullOrEmpty(id))
-                return View("FileNotFound", new FileNotFoundModel(_user));
+                return BadRequest();
 
-            var file = _sharedFileRepository.GetFileByDownloadUri(id.Split('/')[^1]);
+            var file = _fileRepository.GetFileByDownloadUri(id.Split('/')[^1]);
             if (file is null)
-                return View("FileNotFound", new FileNotFoundModel(_user));
+                return BadRequest();
 
             return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
         }
@@ -54,14 +55,14 @@ namespace Portfolio_Box.Controllers
         [HttpGet]
         public PartialViewResult Details(int id)
         {
-            var file = _sharedFileRepository.GetFileById(id);
+            var file = _fileRepository.GetFileById(id);
             if (file is null)
                 _logger.LogError("File details request returned null because the file doesn't exist or do not pertain to the user");
 
             return new PartialViewResult()
             {
                 ViewName = "_FileDetails",
-                ViewData = new ViewDataDictionary<File>(ViewData, file)
+                ViewData = GetViewData(file)
             };
         }
 
@@ -69,7 +70,7 @@ namespace Portfolio_Box.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            var file = _sharedFileRepository.GetFileById(id);
+            var file = _fileRepository.GetFileById(id);
             if (file is null)
             {
                 ModelState.AddModelError("File", "The delete request couldn't be processed");
@@ -77,7 +78,7 @@ namespace Portfolio_Box.Controllers
                 return NotFound(ModelState);
             }
 
-            _sharedFileRepository.DeleteFile(file);
+            _fileRepository.DeleteFile(file);
             return NoContent();
         }
 
@@ -85,14 +86,14 @@ namespace Portfolio_Box.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upload()
         {
-            if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+            if (!MultipartRequestUtility.IsMultipartContentType(Request.ContentType))
             {
                 ModelState.AddModelError("File", "The upload request couldn't be processed");
                 _logger.LogError("Request content type is not multi-part");
                 return BadRequest(ModelState);
             }
 
-            string boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType), int.MaxValue);
+            string boundary = MultipartRequestUtility.GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType), int.MaxValue);
             MultipartReader reader = new(boundary, HttpContext.Request.Body);
             MultipartSection? section = await reader.ReadNextSectionAsync();
 
@@ -100,21 +101,21 @@ namespace Portfolio_Box.Controllers
             while (section is not null)
             {
                 if (ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition))
-                    if (!MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
+                {
+                    if (!MultipartRequestUtility.HasFileContentDisposition(contentDisposition))
                     {
                         ModelState.AddModelError("File", "The upload request couldn't be processed");
                         _logger.LogError("Request content disposition is missing");
                         return BadRequest(ModelState);
                     }
-                    else
+
+                    var file = await _fileFactory.CreateFileAsync(contentDisposition, section, ModelState);
+                    if (file is not null)
                     {
-                        File? file = await _sharedFileFactory.TryCreateFile(contentDisposition, section, ModelState);
-                        if (file != null)
-                        {
-                            uploadedFiles.Add(file);
-                            _sharedFileRepository.SaveFile(file);
-                        }
+                        uploadedFiles.Add(file);
+                        _fileRepository.SaveFile(file);
                     }
+                }
 
                 // Drain any remaining section body that hasn't been consumed and read the headers for the next section
                 section = await reader.ReadNextSectionAsync();

@@ -1,13 +1,16 @@
 ﻿@using Portfolio_Box.Extensions
 @using Portfolio_Box.Models.Files
 @model File
+@{
+    var modelIcon = ViewData["MediaBasePath"] + Model.Icon;
+}
 
 <div id="fileTile-@Model.Id" class="file-tile" data-id="@Model.Id">
     <div class="file-icon">
-        <img alt="@Model.Extension" width="54" height="54" src="@Model.GetIcon()">
+        <img alt="@Model.Extension" width="54" height="54" src="@modelIcon">
     </div>
     <div class="file-info">
         <div class="file-title">@Model.OriginalName</div>
-        <div class="file-details">@Model.GetSize() - @Model.UploadedOn.ToString("d/MM/yyyy")</div>
+        <div class="file-details">@Model.Size - @Model.UploadedOn.ToString("d/MM/yyyy")</div>
     </div>
 </div>

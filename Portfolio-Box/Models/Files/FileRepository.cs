@@ -6,11 +6,18 @@ using Portfolio_Box.Models.Users;
 
 namespace Portfolio_Box.Models.Files
 {
-    public class FileRepository(AppDBContext dbContext, User user, IFileFactory fileFactory) : IFileRepository
+    public class FileRepository : IFileRepository
     {
-        private readonly AppDBContext _appDBContext = dbContext;
-        private readonly User _user = user;
-        private readonly IFileFactory _sharedFileFactory = fileFactory;
+        private readonly AppDBContext _appDBContext;
+        private readonly User _user;
+        private readonly IFileFactory _sharedFileFactory;
+
+        public FileRepository(AppDBContext dbContext, User user, IFileFactory fileFactory)
+        {
+            _appDBContext = dbContext;
+            _user = user;
+            _sharedFileFactory = fileFactory;
+        }
 
         public IEnumerable<File> AllFiles
             => from f in _appDBContext.Files
@@ -41,7 +48,7 @@ namespace Portfolio_Box.Models.Files
         {
             _appDBContext.Files.Remove(sharedFile);
             _appDBContext.SaveChanges();
-            _sharedFileFactory.DeleteFile(sharedFile);
+            _ = _sharedFileFactory.DeleteFileAsync(sharedFile);
         }
     }
 }

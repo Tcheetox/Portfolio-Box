@@ -6,15 +6,23 @@ using Portfolio_Box.Models.Users;
 
 namespace Portfolio_Box.Models.Shared
 {
-    public class UserRepository(AppDBContext appDBContext, CookieHandler cookieHandler, IWebHostEnvironment environment) : IUserRepository
+    public class UserRepository : IUserRepository
     {
-        private readonly AppDBContext _appDBContext = appDBContext;
-        private readonly CookieHandler _cookieHandler = cookieHandler;
+        private readonly AppDBContext _appDBContext;
+        private readonly CookieHandler _cookieHandler;
+        private readonly IWebHostEnvironment _environment;
+
+        public UserRepository(AppDBContext appDBContext, CookieHandler cookieHandler, IWebHostEnvironment environment)
+        {
+            _environment = environment;
+            _appDBContext = appDBContext;
+            _cookieHandler = cookieHandler;
+        }
 
         public User GetUserByAccessToken()
         {
 #if DEBUG
-            if (environment.IsDevelopment())
+            if (_environment.IsDevelopment())
             {
                 return (from user in _appDBContext.Users
                         where user.Id == 1

@@ -9,10 +9,10 @@ namespace Portfolio_Box.Models.Links
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int Id { get; init; }
         [ForeignKey("FileId")]
-        public File? File { get; set; }
-        public int FileId { get; set; }
+        public File? File { get; init; }
+        public int FileId { get; init; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string? DownloadUri { get; set; }
@@ -23,7 +23,7 @@ namespace Portfolio_Box.Models.Links
         public bool IsExpired => DateTime.Now > Expiration;
 
         [NotMapped]
-        public ExpiresIn ExpiryOption { get; set; }
+        public ExpiresIn ExpiryOption { get; init; }
 
         public enum ExpiresIn
         {

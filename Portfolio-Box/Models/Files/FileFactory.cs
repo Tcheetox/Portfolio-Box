@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
@@ -10,18 +11,25 @@ using Portfolio_Box.Models.Users;
 
 namespace Portfolio_Box.Models.Files
 {
-    public class FileFactory(ILogger<FileFactory> logger, User user, IConfiguration configuration) : IFileFactory
+    public class FileFactory : IFileFactory
     {
-        private readonly IConfiguration _configuration = configuration;
-        private readonly ILogger<FileFactory> _logger = logger;
-        private readonly User _user = user;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<FileFactory> _logger;
+        private readonly User _user;
 
-        public void DeleteFile(File sharedFile)
+        public FileFactory(ILogger<FileFactory> logger, User user, IConfiguration configuration)
         {
-            Task.Run(() =>
+            _configuration = configuration;
+            _logger = logger;
+            _user = user;
+        }
+
+        public Task DeleteFileAsync(File sharedFile, CancellationToken token = default)
+            => Task.Run(() =>
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     System.IO.File.Delete(sharedFile.DiskPath);
                     _logger.LogInformation("File '{OriginalName}' deleted from disk by user '{Nickname}' ({Id})",
                         sharedFile.OriginalName, _user.Nickname, _user.Id);
@@ -31,22 +39,21 @@ namespace Portfolio_Box.Models.Files
                     _logger.LogError(ex, "Unexpected error while deleting file '{OriginalName}' from disk '{DiskPath}'",
                             sharedFile.OriginalName, sharedFile.DiskPath);
                 }
-            });
-        }
+            }, token);
 
-        public async Task<File?> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState)
+        public async Task<File?> CreateFileAsync(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState, CancellationToken token = default)
         {
             File? sharedFile = null;
             var trustedFileNameForDisplay = WebUtility.HtmlEncode(contentDisposition.FileName.Value) ?? string.Empty;
             var trustedFileNameForFileStorage = Path.GetRandomFileName();
-            var targetFilePath = _configuration.GetValue<string>("File:StorePath") ?? string.Empty;
+            var targetFilePath = Path.Combine(_configuration.GetValue<string>("File:StorePath") ?? string.Empty, trustedFileNameForFileStorage);
 
-            using (FileStream targetStream = System.IO.File.Create(Path.Combine(targetFilePath, trustedFileNameForFileStorage)))
+            using (FileStream targetStream = System.IO.File.Create(targetFilePath))
             {
                 try
                 {
-                    await section.Body.CopyToAsync(targetStream);
-                    sharedFile = new File(_user.Id, Path.Combine(targetFilePath, trustedFileNameForFileStorage), trustedFileNameForDisplay, targetStream.Length);
+                    await section.Body.CopyToAsync(targetStream, token);
+                    sharedFile = new File(_user.Id, targetFilePath, trustedFileNameForDisplay, targetStream.Length);
                 }
                 catch (IOException ex)
                 {

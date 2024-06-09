@@ -55,7 +55,6 @@ namespace Portfolio_Box
             services.Configure<RazorViewEngineOptions>(options => options.ViewLocationFormats.Add("/Pages/{0}.cshtml"));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCsp(options => options
@@ -64,30 +63,26 @@ namespace Portfolio_Box
                 .ScriptSources(s => s.Self())
                 .ReportUris(s => s.Uris(Configuration.GetValue<string>("Hosting:CspReport"))));
 
-            string basePath = new PathString(Configuration.GetValue<string>("Hosting:BasePath"));
-            SharedFileExtension.BasePath = basePath;
-            app.UsePathBase(basePath);
+            app.UsePathBase(Configuration.GetBasePath());
+
+
+            // Do the migration stuff
+            using var serviceScope = app
+                .ApplicationServices
+                .GetService<IServiceScopeFactory>()!
+                .CreateScope();
+            var database = serviceScope
+                .ServiceProvider
+                .GetRequiredService<AppDBContext>()
+                .Database;
+            database.EnsureCreated();
+            database.Migrate();
+
 
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-
-                // I'd rather use it in production on-demand (avoid conflicting with other shared-db project's migration).
-                using var serviceScope = app
-                    .ApplicationServices
-                    .GetService<IServiceScopeFactory>()!
-                    .CreateScope();
-                var database = serviceScope
-                    .ServiceProvider
-                    .GetRequiredService<AppDBContext>()
-                    .Database;
-                database.EnsureCreated();
-                database.Migrate();
-            }
             else
-            {
                 app.UseExceptionHandler("/Error");
-            }
 
             // app.UseHttpsRedirection(); // -> Nginx handles it let's not use https through proxy_pass directive
             app.UseStaticFiles(new StaticFileOptions

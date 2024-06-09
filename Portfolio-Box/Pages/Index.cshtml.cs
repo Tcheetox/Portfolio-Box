@@ -18,12 +18,14 @@ namespace Portfolio_Box.Pages
         public new readonly User User;
         public readonly Uri RedirectUri;
         public readonly Uri DashboardUri;
+        public readonly string MediaBasePath;
 
         public IndexModel(IFileRepository sharedFileRepository, IConfiguration configuration, User user, CookieHandler cookieHandler)
         {
             SharedFileRepository = sharedFileRepository;
             User = user;
             CookieHandler = cookieHandler;
+            MediaBasePath = configuration.GetMediaBasePath();
 
             var portfolioUri = new Uri(configuration.GetValue<string>("Hosting:Portfolio")!);
             RedirectUri = portfolioUri.Append(configuration.GetValue<string>("Hosting:Redirect")!);
