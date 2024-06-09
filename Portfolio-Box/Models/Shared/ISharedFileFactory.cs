@@ -5,10 +5,10 @@ using Microsoft.Net.Http.Headers;
 
 namespace Portfolio_Box.Models.Shared
 {
-	public interface ISharedFileFactory
-	{
-		public Task<SharedFile?> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState);
+    public interface ISharedFileFactory
+    {
+        public Task<SharedFile?> TryCreateFile(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState);
 
-		public void DeleteFile(SharedFile sharedFile);
-	}
+        public void DeleteFile(SharedFile sharedFile);
+    }
 }
