@@ -12,11 +12,12 @@ namespace Portfolio_Box.Models.Files
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; init; }
         public int UserId { get; init; }
-        public string DiskPath { get; init; }
-        public string OriginalName { get; init; }
-        public long Length { get; init; }
+        public string DiskPath { get; set; }
+        public string OriginalName { get; set; }
+        public long Length { get; set; }
         public DateTime UploadedOn { get; init; } = DateTime.Now;
         public Link? Link { get; init; }
+        public bool Remote { get; init; }
 
         [NotMapped]
         public string Extension => Path.GetExtension(OriginalName);
@@ -50,12 +51,13 @@ namespace Portfolio_Box.Models.Files
             _ => "file.png",
         };
 
-        public File(int userId, string diskPath, string originalName, long length)
+        public File(int userId, string diskPath, string originalName, long length, bool remote = false)
         {
             UserId = userId;
             DiskPath = diskPath;
             OriginalName = originalName;
             Length = length;
+            Remote = remote;
         }
     }
 }

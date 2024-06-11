@@ -25,9 +25,20 @@ namespace Portfolio_Box.Models.Files
             _sharedFileFactory = fileFactory;
         }
 
+        public bool IsRemoteAvailable()
+        {
+            return true; // TODO: do something
+        }
+
         public IEnumerable<File> AllFiles
             => from f in _appDBContext.Files
                where f.UserId == _user.Id
+               orderby f.UploadedOn descending
+               select f;
+
+        public IEnumerable<File> GetFilesByPath(HashSet<string> paths)
+            => from f in _appDBContext.Files
+               where f.UserId == _user.Id && paths.Contains(f.DiskPath)
                orderby f.UploadedOn descending
                select f;
 
@@ -44,17 +55,31 @@ namespace Portfolio_Box.Models.Files
                 select f)
             .FirstOrDefault();
 
-        public void SaveFile(File sharedFile)
+        public void SaveFile(File file)
         {
-            _appDBContext.Files.Add(sharedFile);
+            _appDBContext.Files.Add(file);
             _appDBContext.SaveChanges();
         }
 
-        public void DeleteFile(File sharedFile)
+        public void SaveFiles(File[] files)
         {
-            _appDBContext.Files.Remove(sharedFile);
+            _appDBContext.Files.AddRange(files);
             _appDBContext.SaveChanges();
-            _ = _sharedFileFactory.DeleteFileAsync(sharedFile);
+        }
+
+        public void UpdateFile(File file)
+        {
+            _appDBContext.Files.Update(file);
+            _appDBContext.SaveChanges();
+        }
+
+        public void DeleteFile(File file)
+        {
+            _appDBContext.Files.Remove(file);
+            _appDBContext.SaveChanges();
+            if (file.Remote)
+                return;
+            _ = _sharedFileFactory.DeleteFileAsync(file);
         }
     }
 }

@@ -1,25 +1,70 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Portfolio_Box.Models.Users
 {
     public class UserRepository : IUserRepository
     {
+        private readonly ILogger<UserRepository> _logger;
         private readonly AppDBContext _appDBContext;
         private readonly CookieHandler _cookieHandler;
         private readonly IWebHostEnvironment _environment;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IConfiguration _configuration;
 
-        public UserRepository(AppDBContext appDBContext, CookieHandler cookieHandler, IWebHostEnvironment environment)
+        public UserRepository(
+            ILogger<UserRepository> logger,
+            AppDBContext appDBContext, 
+            CookieHandler cookieHandler, 
+            IWebHostEnvironment environment, 
+            IHttpContextAccessor contextAccessor,
+            IConfiguration configuration)
         {
+            _logger = logger;
             _environment = environment;
             _appDBContext = appDBContext;
             _cookieHandler = cookieHandler;
+            _contextAccessor = contextAccessor;
+            _configuration = configuration;
+        }
+
+        private bool TryGetUserFromIP([NotNullWhen(true)] out User? user)
+        {
+            user = null;
+            if (_contextAccessor.HttpContext is null)
+                return false;
+
+            try
+            {
+                var adminHost = _configuration.GetValue<string>("Remoting:Host")!;
+                var ips = Dns.GetHostAddresses(adminHost);
+                var callerIp = _contextAccessor.HttpContext.Connection.RemoteIpAddress;
+                if (ips is null || callerIp is null || !ips.Contains(callerIp))
+                    return false;
+
+                user = _appDBContext.Users.OfType<AdminUser>().FirstOrDefault();
+                return user is not null;
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, "Error identifying user from it's IP");
+            }
+
+            return false;
         }
 
         public User GetUserByAccessToken()
         {
+            if (TryGetUserFromIP(out var userByIp))
+                return userByIp;
+
 #if DEBUG
             if (_environment.IsDevelopment())
             {

@@ -1,10 +1,23 @@
 ﻿.file-list {
-    display: flex;
     margin-top: 2rem;
-    flex-wrap: wrap;
-    justify-content: space-between;
 }
-
+.tab-pane {
+    display: flex !important;
+    flex-wrap: wrap;
+}
+.nav-link.active {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+.nav-link {
+    padding: 4px 8px;
+}
+.tab-content {
+    margin-top: 0.5rem;
+}
+.tab-pane:not(.active) {
+    display: none !important;
+}
 .file-icon {
     padding-right: 0.5rem;
 }

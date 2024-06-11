@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -16,40 +19,64 @@ namespace Portfolio_Box.Controllers
         private readonly ILogger<FileController> _logger;
         private readonly IFileRepository _fileRepository;
         private readonly IFileFactory _fileFactory;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
         public FileController(
             ILogger<FileController> logger,
+            HttpClient httpClient,
             IFileRepository fileRepository,
             IFileFactory fileFactory,
             IConfiguration configuration)
             : base(configuration)
         {
             _logger = logger;
+            _httpClient = httpClient;
             _fileFactory = fileFactory;
             _fileRepository = fileRepository;
+            _configuration = configuration;
         }
 
         [HttpGet]
-        public IActionResult DownloadById(int id)
+        public async Task<IActionResult> DownloadById(int id)
         {
             var file = _fileRepository.GetFileById(id);
             if (file is null)
                 return NotFound();
 
-            return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
+            return await DownloadFile(file);
         }
 
         [HttpGet]
-        public IActionResult Download(string id)
+        public async Task<IActionResult> Download(string id)
         {
             if (string.IsNullOrEmpty(id))
                 return BadRequest();
 
             var file = _fileRepository.GetFileByDownloadUri(id.Split('/')[^1]);
             if (file is null)
-                return BadRequest();
+                return NotFound();
 
-            return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
+            return await DownloadFile(file);
+        }
+
+        private async Task<IActionResult> DownloadFile(File file)
+        {
+            if (!file.Remote)
+                return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
+
+            var requestUri = $"{_configuration.GetValue<string>("Remoting:Endpoint")}/{WebUtility.UrlEncode(file.DiskPath)}";
+            using var response = await _httpClient.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, HttpContext.RequestAborted);
+            response.EnsureSuccessStatusCode();
+            var responseStream = await response.Content.ReadAsStreamAsync(HttpContext.RequestAborted);
+
+            Response.Headers.Append("Content-Type", MediaTypeNames.Application.Octet);
+            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{file.OriginalName}\"");
+            Response.Headers.Append("Transfer-Encoding", "chunked");
+            await responseStream.CopyToAsync(Response.Body, HttpContext.RequestAborted);
+            await Response.CompleteAsync();
+
+            return new EmptyResult();
         }
 
         [HttpGet]

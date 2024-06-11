@@ -8,7 +8,6 @@ namespace Portfolio_Box.Models.Users
         public override string? Nickname { get; set; }
         public override required string Email { get; set; }
         public override int Id { get; set; }
-        public override int GroupId { get; set; }
         public override List<File> Files { get; set; } = [];
     }
 }

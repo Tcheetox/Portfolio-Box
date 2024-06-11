@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +42,18 @@ namespace Portfolio_Box.Models.Files
                             sharedFile.OriginalName, sharedFile.DiskPath);
                 }
             }, token);
+
+        public Task<File[]> CreateFilesAsync(IEnumerable<RemoteFileDto> remoteFiles, CancellationToken token = default)
+        {
+            var files = remoteFiles.Select(f =>
+            {
+                var name = Path.GetFileName(f.Path);
+                var displayName = WebUtility.HtmlEncode(name);
+                return new File(_user.Id, f.Path, displayName, f.Length, true);
+            });
+            token.ThrowIfCancellationRequested();
+            return Task.FromResult(files.ToArray());
+        }
 
         public async Task<File?> CreateFileAsync(ContentDispositionHeaderValue contentDisposition, MultipartSection section, ModelStateDictionary modelState, CancellationToken token = default)
         {

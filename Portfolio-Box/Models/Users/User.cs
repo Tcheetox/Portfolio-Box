@@ -15,7 +15,5 @@ namespace Portfolio_Box.Models.Users
         [Required]
         public abstract string Email { get; set; }
         public abstract List<File> Files { get; set; }
-        [Column("group_id")]
-        public abstract int GroupId { get; set; }
     }
 }

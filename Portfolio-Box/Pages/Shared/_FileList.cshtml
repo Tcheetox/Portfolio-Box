@@ -3,9 +3,36 @@
 @model FileRepository
 @{
     ViewData["MediaBasePath"] = Model.MediaBasePath;
+    var remoteOk = Model.IsRemoteAvailable();
+    var store = Model.AllFiles.ToList();
 }
 
-@foreach(File file in Model.AllFiles)
-{
-    <partial name="_FileTile" model="file" />
-}
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="local-tab" data-bs-toggle="tab" data-bs-target="#local-tab-pane" type="button" role="tab" aria-controls="local-tab-pane" aria-selected="true">Local</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        @if (remoteOk)
+        {
+            <button class="nav-link" id="remote-tab" data-bs-toggle="tab" data-bs-target="#remote-tab-pane" type="button" role="tab" aria-controls="remote-tab-pane" aria-selected="false">Remote</button>
+        }
+        else
+        {
+            <button class="nav-link disabled" id="remote-tab" data-bs-toggle="tab" data-bs-target="#remote-tab-pane" type="button" role="tab" aria-controls="remote-tab-pane" aria-selected="false" aria-disabled="true">Remote</button>
+        }
+    </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="local-tab-pane" role="tabpanel" aria-labelledby="local-tab" tabindex="0">
+        @foreach (File file in store.Where(f => !f.Remote))
+        {
+            <partial name="_FileTile" model="file" />
+        }
+    </div>
+    <div class="tab-pane fade" id="remote-tab-pane" role="tabpanel" aria-labelledby="remote-tab" tabindex="0">
+        @foreach (File file in store.Where(f => f.Remote))
+        {
+            <partial name="_FileTile" model="file" />
+        }
+    </div>
+</div>
