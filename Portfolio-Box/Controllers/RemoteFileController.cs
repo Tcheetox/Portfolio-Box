@@ -12,7 +12,7 @@ using Portfolio_Box.Models.Users;
 namespace Portfolio_Box.Controllers
 {
     [ApiController]
-    [Route("drop2vlar/api/[controller]")]
+    [Route("api/[controller]")]
     public partial class RemoteFileController : ControllerBase
     {
         private readonly IFileRepository _fileRepository;
