@@ -39,6 +39,7 @@ namespace Portfolio_Box
             services.AddHttpClient();
 
             services.AddSingleton(Configuration);
+            services.AddSingleton<RemoteFileAvailabilityChecker>();
             services.AddScoped<CookieHandler>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped(p => p.GetService<IUserRepository>()!.GetUserByAccessToken());

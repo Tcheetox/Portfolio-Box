@@ -15,20 +15,19 @@ namespace Portfolio_Box.Models.Files
         private readonly AppDBContext _appDBContext;
         private readonly User _user;
         private readonly IFileFactory _sharedFileFactory;
+        private readonly RemoteFileAvailabilityChecker _checker;
 
-        public FileRepository(AppDBContext dbContext, User user, IFileFactory fileFactory, IConfiguration configuration)
+        public FileRepository(AppDBContext dbContext, User user, IFileFactory fileFactory, IConfiguration configuration, RemoteFileAvailabilityChecker checker)
         {
             MediaBasePath = configuration.GetMediaBasePath();
 
             _appDBContext = dbContext;
             _user = user;
             _sharedFileFactory = fileFactory;
+            _checker = checker;
         }
 
-        public bool IsRemoteAvailable()
-        {
-            return true; // TODO: do something
-        }
+        public bool IsRemoteAvailable => _checker.IsAvailable;
 
         public IEnumerable<File> AllFiles
             => from f in _appDBContext.Files

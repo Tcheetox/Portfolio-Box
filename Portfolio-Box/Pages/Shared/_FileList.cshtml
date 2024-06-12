@@ -3,7 +3,6 @@
 @model FileRepository
 @{
     ViewData["MediaBasePath"] = Model.MediaBasePath;
-    var remoteOk = Model.IsRemoteAvailable();
     var store = Model.AllFiles.ToList();
 }
 
@@ -12,7 +11,7 @@
         <button class="nav-link active" id="local-tab" data-bs-toggle="tab" data-bs-target="#local-tab-pane" type="button" role="tab" aria-controls="local-tab-pane" aria-selected="true">Local</button>
     </li>
     <li class="nav-item" role="presentation">
-        @if (remoteOk)
+        @if (Model.IsRemoteAvailable)
         {
             <button class="nav-link" id="remote-tab" data-bs-toggle="tab" data-bs-target="#remote-tab-pane" type="button" role="tab" aria-controls="remote-tab-pane" aria-selected="false">Remote</button>
         }
@@ -30,9 +29,12 @@
         }
     </div>
     <div class="tab-pane fade" id="remote-tab-pane" role="tabpanel" aria-labelledby="remote-tab" tabindex="0">
-        @foreach (File file in store.Where(f => f.Remote))
+        @if (Model.IsRemoteAvailable)
         {
-            <partial name="_FileTile" model="file" />
+            @foreach (File file in store.Where(f => f.Remote))
+            {
+                <partial name="_FileTile" model="file" />
+            }
         }
     </div>
 </div>

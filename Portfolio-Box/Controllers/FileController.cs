@@ -65,7 +65,7 @@ namespace Portfolio_Box.Controllers
             if (!file.Remote)
                 return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
 
-            var requestUri = $"{_configuration.GetValue<string>("Remoting:Endpoint")}/{WebUtility.UrlEncode(file.DiskPath)}";
+            var requestUri = $"{_configuration.GetValue<string>("Remoting:Endpoint")}/stream/{WebUtility.UrlEncode(file.DiskPath)}";
             using var response = await _httpClient.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, HttpContext.RequestAborted);
             response.EnsureSuccessStatusCode();
             var responseStream = await response.Content.ReadAsStreamAsync(HttpContext.RequestAborted);
