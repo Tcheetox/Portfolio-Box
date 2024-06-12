@@ -40,7 +40,7 @@ namespace Portfolio_Box.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(IReadOnlyList<RemoteFileDto> files)
         {
-            //ThrowIfNotAuthorizedAdmin();
+            ThrowIfNotAuthorizedAdmin();
 
             var filesPath = files.Select(f => f.Path).ToHashSet();
             var existingFiles = _fileRepository.GetFilesByPath(filesPath).Select(f => f.DiskPath).ToList();
