@@ -37,8 +37,6 @@ namespace Portfolio_Box
             });
 
             services.AddHttpContextAccessor();
-            services.AddHttpClient();
-
             services.AddSingleton(Configuration);
             services.AddSingleton<RemoteFileAvailabilityChecker>();
             services.AddScoped<CookieHandler>();

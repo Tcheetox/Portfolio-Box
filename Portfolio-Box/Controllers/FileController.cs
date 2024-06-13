@@ -24,17 +24,20 @@ namespace Portfolio_Box.Controllers
 
         public FileController(
             ILogger<FileController> logger,
-            HttpClient httpClient,
             IFileRepository fileRepository,
             IFileFactory fileFactory,
             IConfiguration configuration)
             : base(configuration)
         {
             _logger = logger;
-            _httpClient = httpClient;
             _fileFactory = fileFactory;
             _fileRepository = fileRepository;
             _configuration = configuration;
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            _httpClient = new HttpClient(handler);
         }
 
         [HttpGet]
