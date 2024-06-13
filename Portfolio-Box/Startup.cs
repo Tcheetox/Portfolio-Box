@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,6 +38,8 @@ namespace Portfolio_Box
 
             services.AddHttpContextAccessor();
             services.AddHttpClient();
+            services.AddHttpClient<RemoteFileAvailabilityChecker>()
+                .ConfigurePrimaryHttpMessageHandler(c => new HttpClientHandler { ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true });
 
             services.AddSingleton(Configuration);
             services.AddSingleton<RemoteFileAvailabilityChecker>();
