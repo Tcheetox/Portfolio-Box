@@ -75,7 +75,7 @@ namespace Portfolio_Box.Controllers
                 using var response = await _httpClient.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead); //, HttpContext.RequestAborted
                 response.EnsureSuccessStatusCode();
                 var responseStream = await response.Content.ReadAsStreamAsync(); //HttpContext.RequestAborted
-
+                _logger.LogInformation("WE ARE HERE>>>");
                 Response.Headers.Append("Content-Type", MediaTypeNames.Application.Octet);
                 Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{file.OriginalName}\"");
                 Response.Headers.Append("Transfer-Encoding", "chunked");
