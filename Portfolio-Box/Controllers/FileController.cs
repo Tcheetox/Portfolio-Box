@@ -42,17 +42,17 @@ namespace Portfolio_Box.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DownloadById(int id)
+        public IActionResult DownloadById(int id)
         {
             var file = _fileRepository.GetFileById(id);
             if (file is null)
                 return NotFound();
 
-            return await DownloadFile(file);
+            return DownloadFile(file).GetAwaiter().GetResult();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Download(string id)
+        public IActionResult Download(string id)
         {
             if (string.IsNullOrEmpty(id))
                 return BadRequest();
@@ -61,7 +61,7 @@ namespace Portfolio_Box.Controllers
             if (file is null)
                 return NotFound();
 
-            return await DownloadFile(file);
+            return DownloadFile(file).GetAwaiter().GetResult();
         }
 
         private async Task<IActionResult> DownloadFile(File file)
