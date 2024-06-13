@@ -52,6 +52,7 @@ namespace Portfolio_Box.Models.Users
                     return false;
 
                 user = _appDBContext.Users.OfType<AdminUser>().FirstOrDefault();
+                _logger.LogWarning(user.Email);
                 return user is not null;
             }
             catch (Exception ex) 
