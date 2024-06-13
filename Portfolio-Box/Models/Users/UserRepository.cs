@@ -21,9 +21,9 @@ namespace Portfolio_Box.Models.Users
 
         public UserRepository(
             ILogger<UserRepository> logger,
-            AppDBContext appDBContext, 
-            CookieHandler cookieHandler, 
-            IWebHostEnvironment environment, 
+            AppDBContext appDBContext,
+            CookieHandler cookieHandler,
+            IWebHostEnvironment environment,
             IHttpContextAccessor contextAccessor,
             IConfiguration configuration)
         {
@@ -51,7 +51,7 @@ namespace Portfolio_Box.Models.Users
                 user = _appDBContext.Users.OfType<AdminUser>().FirstOrDefault();
                 return user is not null;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error identifying user from it's IP");
             }

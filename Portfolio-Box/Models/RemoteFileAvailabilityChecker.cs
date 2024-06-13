@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +32,7 @@ namespace Portfolio_Box.Models
         {
             var endpoint = $"{_configuration.GetValue<string>("Remoting:Endpoint")}/healthz";
             var wait = _configuration.GetValue<TimeSpan>("Remoting:CheckInterval");
-            while (!_canceller.IsCancellationRequested) 
+            while (!_canceller.IsCancellationRequested)
             {
                 try
                 {
