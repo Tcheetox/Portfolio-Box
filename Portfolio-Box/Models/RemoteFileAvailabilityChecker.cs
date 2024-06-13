@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -14,11 +16,15 @@ namespace Portfolio_Box.Models
         private readonly HttpClient _httpClient;
 
         private readonly CancellationTokenSource _canceller = new();
-        public RemoteFileAvailabilityChecker(ILogger<RemoteFileAvailabilityChecker> logger, IConfiguration configuration, HttpClient client)
+        public RemoteFileAvailabilityChecker(ILogger<RemoteFileAvailabilityChecker> logger, IConfiguration configuration)
         {
             _configuration = configuration;
             _logger = logger;
-            _httpClient = client;
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            _httpClient = new HttpClient(handler);
             _ = DoCheck();
         }
 

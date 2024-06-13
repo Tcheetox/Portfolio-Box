@@ -38,8 +38,6 @@ namespace Portfolio_Box
 
             services.AddHttpContextAccessor();
             services.AddHttpClient();
-            services.AddHttpClient<RemoteFileAvailabilityChecker>()
-                .ConfigurePrimaryHttpMessageHandler(c => new HttpClientHandler { ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true });
 
             services.AddSingleton(Configuration);
             services.AddSingleton<RemoteFileAvailabilityChecker>();
