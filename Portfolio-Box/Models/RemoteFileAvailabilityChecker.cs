@@ -39,7 +39,7 @@ namespace Portfolio_Box.Models
                 catch (Exception ex)
                 {
                     IsAvailable = false;
-                    _logger.LogWarning("Remote computer seems unavailable: {message}", ex.Message);
+                    _logger.LogError(ex, "Remote computer seems unavailable");
                 }
 
                 if (!_canceller.IsCancellationRequested)

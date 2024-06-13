@@ -46,6 +46,11 @@ namespace Portfolio_Box.Models.Users
                 var adminHost = _configuration.GetValue<string>("Remoting:Host")!;
                 var ips = Dns.GetHostAddresses(adminHost);
                 var callerIp = _contextAccessor.HttpContext.Connection.RemoteIpAddress;
+
+                _logger.LogWarning("adminHost: {adminHost}", adminHost);
+                _logger.LogWarning("ips: {ips}", string.Join('-', ips.Select(e => e.ToString())));
+                _logger.LogWarning("callerIp: {callerIp}", callerIp.ToString());
+
                 if (ips is null || callerIp is null || !ips.Contains(callerIp))
                     return false;
 
