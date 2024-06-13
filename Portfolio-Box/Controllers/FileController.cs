@@ -80,7 +80,7 @@ namespace Portfolio_Box.Controllers
                 var responseStream = await response.Content.ReadAsStreamAsync(HttpContext.RequestAborted);
 
 
-                var tempPath = System.IO.Path.GetRandomFileName();
+                var tempPath = System.IO.Path.Combine(_configuration.GetValue<string>("File:StorePath"), System.IO.Path.GetRandomFileName());
                 using (System.IO.FileStream targetStream = System.IO.File.Create(tempPath))
                 {
 
