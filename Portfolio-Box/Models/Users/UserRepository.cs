@@ -45,6 +45,9 @@ namespace Portfolio_Box.Models.Users
             {
                 var ips = Dns.GetHostAddresses(_configuration.GetValue<string>("Remoting:Host")!).Select(i => i.ToString()).ToHashSet();
                 var callerIp = IPAddress.Parse(_contextAccessor.HttpContext.Request.Headers["X-Real-IP"]!).ToString();
+
+                _logger.LogWarning(string.Join('-', ips));
+                _logger.LogWarning(callerIp);
                 if (!ips.Contains(callerIp))
                     return false;
 
