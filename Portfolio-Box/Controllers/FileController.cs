@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mime;
@@ -68,17 +69,23 @@ namespace Portfolio_Box.Controllers
             if (!file.Remote)
                 return PhysicalFile(file.DiskPath, MediaTypeNames.Application.Octet, file.OriginalName);
 
-            var requestUri = $"{_configuration.GetValue<string>("Remoting:Endpoint")}/stream/{WebUtility.UrlEncode(file.DiskPath)}";
-            using var response = await _httpClient.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, HttpContext.RequestAborted);
-            response.EnsureSuccessStatusCode();
-            var responseStream = await response.Content.ReadAsStreamAsync(HttpContext.RequestAborted);
+            try
+            {
+                var requestUri = $"{_configuration.GetValue<string>("Remoting:Endpoint")}/stream/{WebUtility.UrlEncode(file.DiskPath)}";
+                using var response = await _httpClient.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, HttpContext.RequestAborted);
+                response.EnsureSuccessStatusCode();
+                var responseStream = await response.Content.ReadAsStreamAsync(HttpContext.RequestAborted);
 
-            Response.Headers.Append("Content-Type", MediaTypeNames.Application.Octet);
-            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{file.OriginalName}\"");
-            Response.Headers.Append("Transfer-Encoding", "chunked");
-            await responseStream.CopyToAsync(Response.Body, HttpContext.RequestAborted);
-            await Response.CompleteAsync();
-
+                Response.Headers.Append("Content-Type", MediaTypeNames.Application.Octet);
+                Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{file.OriginalName}\"");
+                Response.Headers.Append("Transfer-Encoding", "chunked");
+                await responseStream.CopyToAsync(Response.Body, HttpContext.RequestAborted);
+                await Response.CompleteAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ISSUE DOWNLKOADING");
+            }
             return new EmptyResult();
         }
 
