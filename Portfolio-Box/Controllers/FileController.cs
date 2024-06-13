@@ -80,24 +80,24 @@ namespace Portfolio_Box.Controllers
                 var responseStream = await response.Content.ReadAsStreamAsync(HttpContext.RequestAborted);
 
 
-                var tempPath = System.IO.Path.Combine(_configuration.GetValue<string>("File:StorePath"), System.IO.Path.GetRandomFileName());
-                using (System.IO.FileStream targetStream = System.IO.File.Create(tempPath))
-                {
+                //var tempPath = System.IO.Path.Combine(_configuration.GetValue<string>("File:StorePath"), System.IO.Path.GetRandomFileName());
+                //using (System.IO.FileStream targetStream = System.IO.File.Create(tempPath))
+                //{
 
-                    await responseStream.CopyToAsync(targetStream);
-                }
-              
+                //    await responseStream.CopyToAsync(targetStream);
+                //}
 
-                _logger.LogInformation("WE ARE HERE>>>");
-                return PhysicalFile(tempPath, MediaTypeNames.Application.Octet, file.OriginalName);
 
-                //Response.Headers.Append("Content-Type", MediaTypeNames.Application.Octet);
-                //Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{file.OriginalName}\"");
-                //Response.Headers.Append("Transfer-Encoding", "chunked");
-                //await responseStream.CopyToAsync(Response.Body, HttpContext.RequestAborted);
-                //_logger.LogInformation("COPIED>>>");
-                //await Response.CompleteAsync();
-                //_logger.LogInformation("DONE>>>");
+                //_logger.LogInformation("WE ARE HERE>>>");
+                //return PhysicalFile(tempPath, MediaTypeNames.Application.Octet, file.OriginalName);
+
+               // Response.Headers.Append("Content-Type", MediaTypeNames.Application.Octet);
+                Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{file.OriginalName}\"");
+               // Response.Headers.Append("Transfer-Encoding", "chunked");
+                await responseStream.CopyToAsync(Response.BodyWriter.AsStream(), HttpContext.RequestAborted);
+                _logger.LogInformation("COPIED>>>");
+                await Response.CompleteAsync();
+                _logger.LogInformation("DONE>>>");
             }
             catch (Exception ex)
             {
