@@ -80,7 +80,9 @@ namespace Portfolio_Box.Controllers
                 Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{file.OriginalName}\"");
                 Response.Headers.Append("Transfer-Encoding", "chunked");
                 await responseStream.CopyToAsync(Response.Body); // , HttpContext.RequestAborted
+                _logger.LogInformation("COPIED>>>");
                 await Response.CompleteAsync();
+                _logger.LogInformation("DONE>>>");
             }
             catch (Exception ex)
             {
