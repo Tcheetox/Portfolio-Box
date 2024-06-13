@@ -45,13 +45,13 @@ namespace Portfolio_Box.Models.Users
             {
                 var adminHost = _configuration.GetValue<string>("Remoting:Host")!;
                 var ips = Dns.GetHostAddresses(adminHost);
-                var callerIp = _contextAccessor.HttpContext.Connection.RemoteIpAddress;
+                var callerIp = IPAddress.Parse(_contextAccessor.HttpContext.Request.Headers["X-Real-IP"]!);
 
                 _logger.LogWarning("adminHost: {adminHost}", adminHost);
                 _logger.LogWarning("ips: {ips}", string.Join('-', ips.Select(e => e.ToString())));
                 _logger.LogWarning("callerIp: {callerIp}", callerIp.ToString());
 
-                if (ips is null || callerIp is null || !ips.Contains(callerIp))
+                if (ips is null || !ips.Contains(callerIp))
                     return false;
 
                 user = _appDBContext.Users.OfType<AdminUser>().FirstOrDefault();
