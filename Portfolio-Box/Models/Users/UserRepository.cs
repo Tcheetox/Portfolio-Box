@@ -43,15 +43,9 @@ namespace Portfolio_Box.Models.Users
 
             try
             {
-                var adminHost = _configuration.GetValue<string>("Remoting:Host")!;
-                var ips = Dns.GetHostAddresses(adminHost);
-                var callerIp = IPAddress.Parse(_contextAccessor.HttpContext.Request.Headers["X-Real-IP"]!);
-
-                _logger.LogWarning("adminHost: {adminHost}", adminHost);
-                _logger.LogWarning("ips: {ips}", string.Join('-', ips.Select(e => e.ToString())));
-                _logger.LogWarning("callerIp: {callerIp}", callerIp.ToString());
-
-                if (ips is null || !ips.Contains(callerIp))
+                var ips = Dns.GetHostAddresses(_configuration.GetValue<string>("Remoting:Host")!).Select(i => i.ToString()).ToHashSet();
+                var callerIp = IPAddress.Parse(_contextAccessor.HttpContext.Request.Headers["X-Real-IP"]!).ToString();
+                if (!ips.Contains(callerIp))
                     return false;
 
                 user = _appDBContext.Users.OfType<AdminUser>().FirstOrDefault();
