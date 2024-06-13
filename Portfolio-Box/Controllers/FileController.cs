@@ -96,7 +96,8 @@ namespace Portfolio_Box.Controllers
                // Response.Headers.Append("Transfer-Encoding", "chunked");
                 await responseStream.CopyToAsync(Response.BodyWriter.AsStream(), HttpContext.RequestAborted);
                 _logger.LogInformation("COPIED>>>");
-                await Response.CompleteAsync();
+              //  await Response.CompleteAsync();
+                await Response.BodyWriter.CompleteAsync();
                 _logger.LogInformation("DONE>>>");
             }
             catch (Exception ex)
