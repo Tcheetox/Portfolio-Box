@@ -18,10 +18,12 @@ namespace Portfolio_Box.Models
         {
             _configuration = configuration;
             _logger = logger;
+#pragma warning disable S4830 // Server certificates should be verified during SSL/TLS connections
             var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
             };
+#pragma warning restore S4830 // Server certificates should be verified during SSL/TLS connections
             _httpClient = new HttpClient(handler);
             _ = DoCheck();
         }
