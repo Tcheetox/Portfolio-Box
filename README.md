@@ -12,8 +12,8 @@ The authentication and authorization is done through another service on my portf
 
 File hosting platform built using:
 
-- C#
-- .NET Core MVC
-- Bootstrap
-- JQuery
-- Entity Framework
+-   C#
+-   ASP .NET8
+-   Bootstrap
+-   JQuery
+-   Entity Framework
