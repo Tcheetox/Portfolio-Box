@@ -15,3 +15,7 @@ services:
             - .:/var/docker/portfolio-box/data
         networks:
             - mariadb_network
+
+networks:
+  mariadb_network:
+    driver: bridge
