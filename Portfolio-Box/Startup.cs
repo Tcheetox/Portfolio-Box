@@ -32,6 +32,7 @@ namespace Portfolio_Box
             services.AddDbContext<AppDBContext>(options =>
             {
                 var connectionString = Configuration.GetConnectionString("DefaultConnection")!;
+                Console.WriteLine(connectionString);
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
