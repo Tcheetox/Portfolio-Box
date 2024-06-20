@@ -12,7 +12,7 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
         volumes:
-            - .:/var/docker/portfolio-box/data
+            - /var/docker/portfolio-box/data:/data
         networks:
             - mariadb_mariadb_network
 
