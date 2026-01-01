@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
     portfolio-box:
         restart: always
@@ -12,7 +10,7 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
         volumes:
-            - /var/docker/portfolio-box/data:/data
+            - /var/www/portfolio-box/data:/data
         networks:
             - mariadb_mariadb_network
 
