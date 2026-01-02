@@ -25,14 +25,13 @@ public class Startup
 		Configuration = configuration;
 	}
 
-	public IConfiguration Configuration { get; }
+	private IConfiguration Configuration { get; }
 
 	public void ConfigureServices(IServiceCollection services)
 	{
 		services.AddDbContext<AppDbContext>(options =>
 		{
 			var connectionString = Configuration.GetConnectionString("DefaultConnection")!;
-			Console.WriteLine(connectionString);
 			options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 		});
 
