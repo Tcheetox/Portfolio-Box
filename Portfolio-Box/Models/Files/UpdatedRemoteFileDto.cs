@@ -1,7 +1,6 @@
-﻿namespace Portfolio_Box.Models.Files
+﻿namespace Portfolio_Box.Models.Files;
+
+public record class UpdatedRemoteFileDto : RemoteFileDto
 {
-    public record class UpdatedRemoteFileDto : RemoteFileDto
-    {
-        public string? PreviousPath { get; init; }
-    }
+	public string? PreviousPath { get; init; }
 }

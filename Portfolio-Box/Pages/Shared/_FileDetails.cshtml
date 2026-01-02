@@ -1,13 +1,12 @@
-﻿@using Portfolio_Box.Models.Files
-@using static Portfolio_Box.Models.Links.Link
-@model File
+﻿@using static Portfolio_Box.Models.Links.Link
+@model Portfolio_Box.Models.Files.File
 
 <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         @if (Model != null)
         {
             <div class="modal-header">
-                <partial name="_FileTile" model="@Model" />
+                <partial name="_FileTile" model="@Model"/>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -39,7 +38,7 @@
                 else
                 {
                     <form id="createLinkForm" data-id="@Model.Id">
-                        <input for="fileId" type="hidden" id="fileId" value="@Model.Id" />
+                        <input for="fileId" type="hidden" id="fileId" value="@Model.Id"/>
                         <div class="row">
                             <div class="col-md-7">
                                 <label for="downloadUrl" class="form-label">Download URL</label>

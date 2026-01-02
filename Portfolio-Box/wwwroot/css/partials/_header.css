@@ -15,13 +15,16 @@ nav {
     margin: auto 0.5rem auto 1rem;
     padding-left: 0.8rem;
 }
+
 .nickname.authorized {
     border-left: 1px solid lightgray;
 }
+
 .nickname a {
     color: black;
     text-decoration: none;
 }
+
 .nickname a:hover {
     text-decoration: underline;
 }
@@ -30,6 +33,7 @@ nav {
     fill: var(--main-color);
     transition: all var(--animation-duration);
 }
+
 .logo:hover {
     fill: var(--main-hover-color);
 }

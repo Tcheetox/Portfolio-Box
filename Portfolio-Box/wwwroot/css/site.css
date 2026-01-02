@@ -8,29 +8,31 @@ html {
     font-size: 24px;
     overflow-x: hidden;
 }
+
 body {
     width: 100vw;
 }
-body.modal-open, 
+
+body.modal-open,
 .modal {
     padding-right: 0 !important;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
@@ -55,6 +57,7 @@ h2 {
     margin: auto;
     position: relative;
 }
+
 .title:after {
     position: absolute;
     content: '';
@@ -91,10 +94,11 @@ button.unstyled {
 img.scale {
     transition: all 100ms;
 }
+
 img.scale:hover {
     transform: scale(1.05);
 }
 
 .modal-content {
-    border:none;
+    border: none;
 }

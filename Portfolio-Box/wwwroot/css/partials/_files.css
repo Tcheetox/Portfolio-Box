@@ -1,23 +1,29 @@
 ﻿.file-list {
     margin-top: 2rem;
 }
+
 .tab-pane {
     display: flex !important;
     flex-wrap: wrap;
 }
+
 .nav-link.active {
     background-color: #0d6efd !important;
     color: white !important;
 }
+
 .nav-link {
     padding: 4px 8px;
 }
+
 .tab-content {
     margin-top: 0.5rem;
 }
+
 .tab-pane:not(.active) {
     display: none !important;
 }
+
 .file-icon {
     padding-right: 0.5rem;
 }
@@ -37,6 +43,7 @@
     transition: all var(--animation-duration);
     box-shadow: 1px 3px 3px 3px rgba(0, 0, 0, 0.05);
 }
+
 .file-list .file-tile:hover {
     transform: scale(1.05);
     background-color: #f6f6f6;
@@ -75,9 +82,11 @@
     padding: 0;
     max-width: 100%;
 }
+
 .modal-header .file-info {
     max-width: calc(100% - 75px);
 }
+
 .modal-header .btn-close {
     position: absolute;
     top: 1rem;
@@ -85,7 +94,7 @@
 }
 
 .modal-dialog .expired {
-   color: red;
+    color: red;
 }
 
 .handle-link {
@@ -97,6 +106,7 @@
 .modal-dialog .col-md-7 {
     width: 60.33333%;
 }
+
 .modal-dialog .col-md-1 {
     width: 6.33333%;
 }

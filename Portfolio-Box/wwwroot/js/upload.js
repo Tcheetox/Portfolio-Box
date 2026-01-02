@@ -1,5 +1,4 @@
-﻿
-$("#uploadButton").click(function () {
+﻿$("#uploadButton").click(function () {
     $("#files").val("")
     displayState(false)
 })
@@ -28,7 +27,7 @@ $("#dragArea").on("drop", function (e) {
 })
 
 const displayState = (valid, files = null) => {
-    $(".drag-area .info").css({ color: "darkgray" })
+    $(".drag-area .info").css({color: "darkgray"})
     if (!valid) {
         $(".drag-area .info").text("Max file size 10GB")
         $(".drag-area .message").html("<strong>Drop</strong> a file or <strong>click</strong> to upload")
@@ -55,10 +54,9 @@ const filesChanged = () => {
         }
         if (totalSize <= 10737418240) {
             displayState(true, files)
-        }
-        else {
+        } else {
             displayState(false)
-            $(".drag-area .info").css({ color: "red" })
+            $(".drag-area .info").css({color: "red"})
         }
     }
 }

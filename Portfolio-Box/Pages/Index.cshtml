@@ -1,13 +1,13 @@
 ﻿@page
-@model Portfolio_Box.Pages.IndexModel
+@model IndexModel
 
 <div class="text-center">
     <h2 class="title">My files library</h2>
     <div id="fileList" class="file-list">
-        <partial name="_FileList" model="Model.FileRepository" />
+        <partial name="_FileList" model="Model.FileRepository"/>
     </div>
 </div>
 
 <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="FileDetails" aria-hidden="true">
-    <partial name="_FileDetails" model="null" />
+    <partial name="_FileDetails" model="null"/>
 </div>

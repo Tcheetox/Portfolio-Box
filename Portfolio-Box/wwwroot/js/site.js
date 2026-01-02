@@ -32,7 +32,7 @@ const uploadFile = async form => {
     xhr.upload.onprogress = e => {
         const current = Math.round(100 * e.loaded / totalSize)
         if (current > progress) {
-            progressBar.css({ background: `linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(0,123,255,1) ${current - 3}%, rgba(255,255,255,1) ${current + 2}%, rgba(255,255,255,0) 100%)` })
+            progressBar.css({background: `linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(0,123,255,1) ${current - 3}%, rgba(255,255,255,1) ${current + 2}%, rgba(255,255,255,0) 100%)`})
             progress = current
         }
     }
@@ -43,7 +43,7 @@ const uploadFile = async form => {
             if (this.status === 201)
                 $("#fileList").load(`${getLocation()}?handler=FileListPartial`) // Reload partial _FileList to display updated results
 
-            progressBar.css({ background: `linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(255,255,255,0) 0%)` })
+            progressBar.css({background: `linear-gradient(90deg, rgba(0,123,255,1) 0%, rgba(255,255,255,0) 0%)`})
             $("#uploadButton").prop("disabled", false)
             $("#uploadButton .spinner-border").addClass("hidden")
             $("#uploadButton .text-content").removeClass("hidden")
@@ -67,7 +67,7 @@ $("#detailsModal").on("click", "#deleteFile", function () {
     $.ajax({
         url: `${getLocation()}/file/delete/${$(this).data("id")}`,
         type: 'DELETE',
-        headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
+        headers: {'RequestVerificationToken': getCookie('RequestVerificationToken')},
         success: () => $(`#fileTile-${$(this).data("id")}`).remove()
     })
 })
@@ -77,7 +77,7 @@ $("#detailsModal").on("submit", "#createLinkForm", function (e) {
     $.ajax({
         url: `${getLocation()}/link/create?id=${$(this).data("id")}&expiry=${$('#expiresIn').val()}`,
         type: 'POST',
-        headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
+        headers: {'RequestVerificationToken': getCookie('RequestVerificationToken')},
         success: results => {
             $("#detailsModal").html(results)
             adjustDownloadUrl()
@@ -89,7 +89,7 @@ $("#detailsModal").on("click", "#deleteLink", function () {
     $.ajax({
         url: `${getLocation()}/link/delete/${$(this).data("id")}`,
         type: 'DELETE',
-        headers: { 'RequestVerificationToken': getCookie('RequestVerificationToken') },
+        headers: {'RequestVerificationToken': getCookie('RequestVerificationToken')},
         success: results => $("#detailsModal").html(results)
     })
 })

@@ -1,7 +1,6 @@
-﻿namespace Portfolio_Box.Models.Users
+﻿namespace Portfolio_Box.Models.Users;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        public User GetUserByAccessToken();
-    }
+	public User GetUserByAccessToken();
 }

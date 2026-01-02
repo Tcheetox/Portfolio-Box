@@ -1,12 +1,12 @@
 ﻿@model User
 
-@if (Model is AuthorizedUser && @ViewContext.ActionDescriptor.DisplayName == "/Index")
+@if (Model is AuthorizedUser && ViewContext.ActionDescriptor.DisplayName == "/Index")
 {
     <button type="button" id="uploadButton" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
         <span class="text-content">
             Upload
         </span>
-        <div class="spinner-border hidden" role="status">         
+        <div class="spinner-border hidden" role="status">
         </div>
     </button>
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="UploadFile" aria-hidden="true">

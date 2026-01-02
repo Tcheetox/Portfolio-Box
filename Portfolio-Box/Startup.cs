@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,104 +16,103 @@ using Portfolio_Box.Models.Files;
 using Portfolio_Box.Models.Links;
 using Portfolio_Box.Models.Users;
 
-namespace Portfolio_Box
+namespace Portfolio_Box;
+
+public class Startup
 {
-    public class Startup
-    {
-        public IConfiguration Configuration { get; }
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public Startup(IConfiguration configuration)
+	{
+		Configuration = configuration;
+	}
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<AppDBContext>(options =>
-            {
-                var connectionString = Configuration.GetConnectionString("DefaultConnection")!;
-                Console.WriteLine(connectionString);
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-            });
+	public IConfiguration Configuration { get; }
 
-            services.AddHttpContextAccessor();
-            services.AddSingleton(Configuration);
-            services.AddSingleton<RemoteFileAvailabilityChecker>();
-            services.AddScoped<CookieHandler>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped(p => p.GetService<IUserRepository>()!.GetUserByAccessToken());
-            services.AddScoped<IFileFactory, FileFactory>();
-            services.AddScoped<IFileRepository, FileRepository>();
-            services.AddScoped<ILinkRepository, LinkRepository>();
-            services.AddControllers();
+	public void ConfigureServices(IServiceCollection services)
+	{
+		services.AddDbContext<AppDBContext>(options =>
+		{
+			var connectionString = Configuration.GetConnectionString("DefaultConnection")!;
+			Console.WriteLine(connectionString);
+			options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+		});
 
-            services.Configure<KestrelServerOptions>(o => o.Limits.MaxRequestBodySize = Configuration.GetValue<long>("File:MaxBytes"));
+		services.AddHttpContextAccessor();
+		services.AddSingleton(Configuration);
+		services.AddSingleton<RemoteFileAvailabilityChecker>();
+		services.AddScoped<CookieHandler>();
+		services.AddScoped<IUserRepository, UserRepository>();
+		services.AddScoped(p => p.GetService<IUserRepository>()!.GetUserByAccessToken());
+		services.AddScoped<IFileFactory, FileFactory>();
+		services.AddScoped<IFileRepository, FileRepository>();
+		services.AddScoped<ILinkRepository, LinkRepository>();
+		services.AddControllers();
 
-            services.AddRazorPages(o =>
-                o.Conventions.AddPageApplicationModelConvention("/Index", model =>
-                    model.Filters.Add(new AntiforgeryTokenCookieAttribute()))
-                );
-            services.Configure<RazorViewEngineOptions>(options => options.ViewLocationFormats.Add("/Pages/{0}.cshtml"));
-        }
+		services.Configure<KestrelServerOptions>(o => o.Limits.MaxRequestBodySize = Configuration.GetValue<long>("File:MaxBytes"));
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            app.UseCsp(options => options
-                .BaseUris(s => s.Self())
-                .ObjectSources(s => s.None())
-                .ScriptSources(s => s.Self())
-                .ReportUris(s => s.Uris(Configuration.GetValue<string>("Hosting:CspReport"))));
+		services.AddRazorPages(o =>
+			o.Conventions.AddPageApplicationModelConvention("/Index", model =>
+				model.Filters.Add(new AntiforgeryTokenCookieAttribute()))
+		);
+		services.Configure<RazorViewEngineOptions>(options => options.ViewLocationFormats.Add("/Pages/{0}.cshtml"));
+	}
 
-            app.UsePathBase(Configuration.GetBasePath());
+	public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+	{
+		app.UseCsp(options => options
+			.BaseUris(s => s.Self())
+			.ObjectSources(s => s.None())
+			.ScriptSources(s => s.Self())
+			.ReportUris(s => s.Uris(Configuration.GetValue<string>("Hosting:CspReport"))));
 
-
-            // Do the migration stuff
-            using var serviceScope = app
-                .ApplicationServices
-                .GetService<IServiceScopeFactory>()!
-                .CreateScope();
-            var database = serviceScope
-                .ServiceProvider
-                .GetRequiredService<AppDBContext>()
-                .Database;
-            database.EnsureCreated();
-            database.Migrate();
+		app.UsePathBase(Configuration.GetBasePath());
 
 
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-            else
-                app.UseExceptionHandler("/Error");
+		// Do the migration stuff
+		using var serviceScope = app
+			.ApplicationServices
+			.GetService<IServiceScopeFactory>()!
+			.CreateScope();
+		var database = serviceScope
+			.ServiceProvider
+			.GetRequiredService<AppDBContext>()
+			.Database;
+		database.EnsureCreated();
+		database.Migrate();
 
-            // app.UseHttpsRedirection(); // -> Nginx handles it let's not use https through proxy_pass directive
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                OnPrepareResponse = ctx =>
-                {
-                    // Cache static files for 30 days
-                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000");
-                    ctx.Context.Response.Headers.Append("Expires", DateTime.UtcNow.AddDays(30).ToString("R", CultureInfo.InvariantCulture));
-                }
-            });
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/healthcheck", async context =>
-                {
-                    string? forward = context.Request.Headers["X-Forwarded-For"];
-                    var ipAddress = forward?.Split(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
-                    var isAllowed = env.IsDevelopment() || Configuration.GetValue("Hosting:Whitelisted", string.Empty)!.Equals(ipAddress, StringComparison.OrdinalIgnoreCase);
 
-                    if (!isAllowed)
-                    {
-                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                        return;
-                    }
+		if (env.IsDevelopment())
+			app.UseDeveloperExceptionPage();
+		else
+			app.UseExceptionHandler("/Error");
 
-                    await context.Response.WriteAsync("Service is healthy");
-                });
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
-            });
-        }
-    }
+		// app.UseHttpsRedirection(); // -> Nginx handles it let's not use https through proxy_pass directive
+		app.UseStaticFiles(new StaticFileOptions
+		{
+			OnPrepareResponse = ctx =>
+			{
+				// Cache static files for 30 days
+				ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000");
+				ctx.Context.Response.Headers.Append("Expires", DateTime.UtcNow.AddDays(30).ToString("R", CultureInfo.InvariantCulture));
+			}
+		});
+		app.UseRouting();
+		app.UseEndpoints(endpoints =>
+		{
+			endpoints.MapGet("/healthcheck", async context =>
+			{
+				// string? forward = context.Request.Headers["X-Forwarded-For"];
+				// var ipAddress = forward?.Split(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
+				// var isAllowed = env.IsDevelopment() || Configuration.GetValue("Hosting:Whitelisted", string.Empty)!.Equals(ipAddress, StringComparison.OrdinalIgnoreCase);
+				//
+				// if (!isAllowed)
+				// {
+				// 	context.Response.StatusCode = StatusCodes.Status403Forbidden;
+				// 	return;
+				// }
+				await context.Response.WriteAsync("Service is healthy");
+			});
+			endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+			endpoints.MapRazorPages();
+		});
+	}
 }

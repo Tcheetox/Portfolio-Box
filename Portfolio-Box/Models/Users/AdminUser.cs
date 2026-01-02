@@ -1,5 +1,5 @@
-﻿namespace Portfolio_Box.Models.Users
+﻿namespace Portfolio_Box.Models.Users;
+
+public class AdminUser : AuthorizedUser
 {
-    public class AdminUser : AuthorizedUser
-    { }
 }

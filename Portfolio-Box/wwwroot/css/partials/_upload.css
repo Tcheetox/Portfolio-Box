@@ -2,8 +2,7 @@
     font-weight: 600;
 }
 
-.drag-area
-{
+.drag-area {
     height: 300px;
     border: 2px dashed lightgray;
     margin: 1.5rem 2rem;
@@ -12,29 +11,31 @@
     cursor: pointer;
 }
 
-    .drag-area.dragging {
-        background-color: #f6f6f6;
-    }
+.drag-area.dragging {
+    background-color: #f6f6f6;
+}
 
-    .drag-area .content {
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        pointer-events: none;
-    }
-    .drag-area .message {
-        margin-top: -2px;
-        font-size: 1.25rem;
-    }
-    .drag-area .info {
-        text-align: center;
-        margin: 4px auto auto auto;
-        color: darkgray;
-        font-size: 14px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
+.drag-area .content {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    pointer-events: none;
+}
+
+.drag-area .message {
+    margin-top: -2px;
+    font-size: 1.25rem;
+}
+
+.drag-area .info {
+    text-align: center;
+    margin: 4px auto auto auto;
+    color: darkgray;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
