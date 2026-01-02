@@ -66,7 +66,7 @@ public class UserRepository : IUserRepository
 	private bool TryGetUserFromIp([NotNullWhen(true)] out User? user)
 	{
 		user = null;
-		if (_contextAccessor.HttpContext is null)
+		if (!_configuration.GetValue<bool>("Remoting:Enabled") || _contextAccessor.HttpContext is null)
 			return false;
 
 		try

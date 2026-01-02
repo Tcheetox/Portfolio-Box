@@ -32,13 +32,13 @@
             <partial name="_FileTile" model="file"/>
         }
     </div>
-    <div class="tab-pane fade" id="remote-tab-pane" role="tabpanel" aria-labelledby="remote-tab" tabindex="0">
-        @if (Model.IsRemoteAvailable)
-        {
+    @if (Model.IsRemoteAvailable)
+    {
+        <div class="tab-pane fade" id="remote-tab-pane" role="tabpanel" aria-labelledby="remote-tab" tabindex="0">
             @foreach (var file in store.Where(f => f.Remote))
             {
                 <partial name="_FileTile" model="file"/>
             }
-        }
-    </div>
+        </div>
+    }
 </div>
