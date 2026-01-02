@@ -10,17 +10,17 @@ namespace Portfolio_Box.Models.Files;
 
 public class FileRepository : IFileRepository
 {
-	private readonly AppDBContext _appDBContext;
+	private readonly AppDbContext _appDbContext;
 	private readonly RemoteFileAvailabilityChecker _checker;
 	private readonly IFileFactory _sharedFileFactory;
 	private readonly User _user;
 	public readonly string MediaBasePath;
 
-	public FileRepository(AppDBContext dbContext, User user, IFileFactory fileFactory, IConfiguration configuration, RemoteFileAvailabilityChecker checker)
+	public FileRepository(AppDbContext dbContext, User user, IFileFactory fileFactory, IConfiguration configuration, RemoteFileAvailabilityChecker checker)
 	{
 		MediaBasePath = configuration.GetMediaBasePath();
 
-		_appDBContext = dbContext;
+		_appDbContext = dbContext;
 		_user = user;
 		_sharedFileFactory = fileFactory;
 		_checker = checker;
@@ -29,14 +29,14 @@ public class FileRepository : IFileRepository
 	public bool IsRemoteAvailable => _checker.IsAvailable;
 
 	public IEnumerable<File> AllFiles
-		=> from f in _appDBContext.Files
+		=> from f in _appDbContext.Files
 			where f.UserId == _user.Id
 			orderby f.UploadedOn descending
 			select f;
 
 	public IEnumerable<File> GetFilesByPath(HashSet<string> paths)
 	{
-		return from f in _appDBContext.Files
+		return from f in _appDbContext.Files
 			where f.UserId == _user.Id && paths.Contains(f.DiskPath)
 			orderby f.UploadedOn descending
 			select f;
@@ -44,7 +44,7 @@ public class FileRepository : IFileRepository
 
 	public File? GetFileById(int id)
 	{
-		return (from f in _appDBContext.Files
+		return (from f in _appDbContext.Files
 				where f.Id == id && f.UserId == _user.Id
 				select f)
 			.Include(c => c.Link)
@@ -53,7 +53,7 @@ public class FileRepository : IFileRepository
 
 	public File? GetFileByDownloadUri(string downloadUri)
 	{
-		return (from f in _appDBContext.Files
+		return (from f in _appDbContext.Files
 				where f.Link != null && f.Link.DownloadUri == downloadUri && f.Link.Expiration > DateTime.Now
 				select f)
 			.FirstOrDefault();
@@ -61,26 +61,26 @@ public class FileRepository : IFileRepository
 
 	public void SaveFile(File file)
 	{
-		_appDBContext.Files.Add(file);
-		_appDBContext.SaveChanges();
+		_appDbContext.Files.Add(file);
+		_appDbContext.SaveChanges();
 	}
 
 	public void SaveFiles(File[] files)
 	{
-		_appDBContext.Files.AddRange(files);
-		_appDBContext.SaveChanges();
+		_appDbContext.Files.AddRange(files);
+		_appDbContext.SaveChanges();
 	}
 
 	public void UpdateFile(File file)
 	{
-		_appDBContext.Files.Update(file);
-		_appDBContext.SaveChanges();
+		_appDbContext.Files.Update(file);
+		_appDbContext.SaveChanges();
 	}
 
 	public void DeleteFile(File file)
 	{
-		_appDBContext.Files.Remove(file);
-		_appDBContext.SaveChanges();
+		_appDbContext.Files.Remove(file);
+		_appDbContext.SaveChanges();
 		if (file.Remote)
 			return;
 		_ = _sharedFileFactory.DeleteFileAsync(file);

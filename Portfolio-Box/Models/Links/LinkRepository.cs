@@ -6,16 +6,16 @@ namespace Portfolio_Box.Models.Links;
 
 public class LinkRepository : ILinkRepository
 {
-	private readonly AppDBContext _appDBContext;
+	private readonly AppDbContext _appDbContext;
 
-	public LinkRepository(AppDBContext appDBContext)
+	public LinkRepository(AppDbContext appDbContext)
 	{
-		_appDBContext = appDBContext;
+		_appDbContext = appDbContext;
 	}
 
 	public Link? GetLinkById(int id)
 	{
-		return (from l in _appDBContext.Links
+		return (from l in _appDbContext.Links
 				where l.Id == id
 				select l)
 			.Include(f => f.File)
@@ -28,14 +28,14 @@ public class LinkRepository : ILinkRepository
 		if (sharedLink.File?.Link is not null)
 		{
 			sharedLink.UpdateFrom(sharedLink.File.Link);
-			_appDBContext.Links.Update(sharedLink);
+			_appDbContext.Links.Update(sharedLink);
 		}
 		else
 		{
-			_appDBContext.Links.Add(sharedLink);
+			_appDbContext.Links.Add(sharedLink);
 		}
 
-		_appDBContext.SaveChanges();
+		_appDbContext.SaveChanges();
 	}
 
 	public File? DeleteLinkById(int id)
@@ -43,8 +43,8 @@ public class LinkRepository : ILinkRepository
 		var targetLink = GetLinkById(id);
 		if (targetLink is not null)
 		{
-			_appDBContext.Links.Remove(targetLink);
-			_appDBContext.SaveChanges();
+			_appDbContext.Links.Remove(targetLink);
+			_appDbContext.SaveChanges();
 			return targetLink.File;
 		}
 

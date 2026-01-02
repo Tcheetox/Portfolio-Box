@@ -29,7 +29,7 @@ public class Startup
 
 	public void ConfigureServices(IServiceCollection services)
 	{
-		services.AddDbContext<AppDBContext>(options =>
+		services.AddDbContext<AppDbContext>(options =>
 		{
 			var connectionString = Configuration.GetConnectionString("DefaultConnection")!;
 			Console.WriteLine(connectionString);
@@ -74,7 +74,7 @@ public class Startup
 			.CreateScope();
 		var database = serviceScope
 			.ServiceProvider
-			.GetRequiredService<AppDBContext>()
+			.GetRequiredService<AppDbContext>()
 			.Database;
 		database.EnsureCreated();
 		database.Migrate();

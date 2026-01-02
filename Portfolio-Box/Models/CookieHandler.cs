@@ -12,8 +12,8 @@ namespace Portfolio_Box.Models;
 public class CookieHandler
 {
 	private readonly IConfiguration _configuration;
-	private readonly ILogger<CookieHandler> _logger;
 	private readonly IHttpContextAccessor _contextAccessor;
+	private readonly ILogger<CookieHandler> _logger;
 
 	public CookieHandler(IHttpContextAccessor contextAccessor, IConfiguration configuration, ILogger<CookieHandler> logger)
 	{
@@ -46,6 +46,7 @@ public class CookieHandler
 		if (cookiePath is null)
 			return;
 
+		var domain = _configuration.GetValue<string>("Cookies:Domain");
 		foreach (var cookie in _configuration
 			         .GetSection("Cookies")
 			         .GetChildren()
@@ -55,7 +56,7 @@ public class CookieHandler
 			{
 				httpResponse.Cookies.Delete(
 					cookie!,
-					new CookieOptions { Domain = ".thekecha.com", Path = cookiePath });
+					new CookieOptions { Domain = domain, Path = cookiePath });
 			}
 			catch (Exception e)
 			{

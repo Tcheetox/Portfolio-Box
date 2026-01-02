@@ -12,7 +12,7 @@ namespace Portfolio_Box.Models.Users;
 
 public class UserRepository : IUserRepository
 {
-	private readonly AppDBContext _appDBContext;
+	private readonly AppDbContext _appDbContext;
 	private readonly IConfiguration _configuration;
 	private readonly IHttpContextAccessor _contextAccessor;
 	private readonly CookieHandler _cookieHandler;
@@ -21,7 +21,7 @@ public class UserRepository : IUserRepository
 
 	public UserRepository(
 		ILogger<UserRepository> logger,
-		AppDBContext appDBContext,
+		AppDbContext appDbContext,
 		CookieHandler cookieHandler,
 		IWebHostEnvironment environment,
 		IHttpContextAccessor contextAccessor,
@@ -29,7 +29,7 @@ public class UserRepository : IUserRepository
 	{
 		_logger = logger;
 		_environment = environment;
-		_appDBContext = appDBContext;
+		_appDbContext = appDbContext;
 		_cookieHandler = cookieHandler;
 		_contextAccessor = contextAccessor;
 		_configuration = configuration;
@@ -37,13 +37,13 @@ public class UserRepository : IUserRepository
 
 	public User GetUserByAccessToken()
 	{
-		if (TryGetUserFromIP(out var userByIp))
+		if (TryGetUserFromIp(out var userByIp))
 			return userByIp;
 
 #if DEBUG
 		if (_environment.IsDevelopment())
 		{
-			return (from user in _appDBContext.Users
+			return (from user in _appDbContext.Users
 					where user.Id == 1
 					select user)
 				.FirstOrDefault() ?? AnonymousUser.Instance;
@@ -54,8 +54,8 @@ public class UserRepository : IUserRepository
 			return AnonymousUser.Instance;
 
 		var accessToken = Token.ExtractAccessToken(cookie.Value);
-		var u = (from token in _appDBContext.Tokens
-				join user in _appDBContext.Users on token.UserId equals user.Id
+		var u = (from token in _appDbContext.Tokens
+				join user in _appDbContext.Users on token.UserId equals user.Id
 				where token.AccessToken == accessToken && token.AccessTokenExpiresAt > DateTime.Now
 				select user)
 			.FirstOrDefault();
@@ -63,7 +63,7 @@ public class UserRepository : IUserRepository
 		return u ?? AnonymousUser.Instance;
 	}
 
-	private bool TryGetUserFromIP([NotNullWhen(true)] out User? user)
+	private bool TryGetUserFromIp([NotNullWhen(true)] out User? user)
 	{
 		user = null;
 		if (_contextAccessor.HttpContext is null)
@@ -76,7 +76,7 @@ public class UserRepository : IUserRepository
 			if (!ips.Contains(callerIp))
 				return false;
 
-			user = _appDBContext.Users.OfType<AdminUser>().FirstOrDefault();
+			user = _appDbContext.Users.OfType<AdminUser>().FirstOrDefault();
 			return user is not null;
 		}
 		catch (Exception ex)

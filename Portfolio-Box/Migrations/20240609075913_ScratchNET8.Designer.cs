@@ -11,7 +11,7 @@ using Portfolio_Box.Models;
 
 namespace Portfolio_Box.Migrations
 {
-    [DbContext(typeof(AppDBContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20240609075913_ScratchNET8")]
     partial class ScratchNET8
     {

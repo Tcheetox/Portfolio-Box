@@ -7,23 +7,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Portfolio_Box.Models;
 
-public class RemoteFileAvailabilityChecker : IDisposable
+public sealed class RemoteFileAvailabilityChecker : IDisposable
 {
 	private readonly CancellationTokenSource _canceller = new();
 	private readonly IConfiguration _configuration;
-	private readonly HttpClient _httpClient;
+	private readonly HttpClient? _httpClient;
 	private readonly ILogger<RemoteFileAvailabilityChecker> _logger;
 
 	public RemoteFileAvailabilityChecker(ILogger<RemoteFileAvailabilityChecker> logger, IConfiguration configuration)
 	{
 		_configuration = configuration;
 		_logger = logger;
-#pragma warning disable S4830 // Server certificates should be verified during SSL/TLS connections
+		if (!configuration.GetValue<bool>("Remoting:Enabled"))
+			return;
+
 		var handler = new HttpClientHandler
 		{
-			ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+			ServerCertificateCustomValidationCallback = (_, _, _, _) => true
 		};
-#pragma warning restore S4830 // Server certificates should be verified during SSL/TLS connections
 		_httpClient = new HttpClient(handler);
 		_ = DoCheck();
 	}
@@ -44,7 +45,7 @@ public class RemoteFileAvailabilityChecker : IDisposable
 		{
 			try
 			{
-				var q = await _httpClient.GetAsync(endpoint, _canceller.Token);
+				var q = await _httpClient!.GetAsync(endpoint, _canceller.Token);
 				q.EnsureSuccessStatusCode();
 				IsAvailable = true;
 			}
