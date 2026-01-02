@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Portfolio_Box.Models;
 
@@ -12,12 +12,14 @@ namespace Portfolio_Box.Models;
 public class CookieHandler
 {
 	private readonly IConfiguration _configuration;
-	private readonly IServiceProvider _serviceProvider;
+	private readonly ILogger<CookieHandler> _logger;
+	private readonly IHttpContextAccessor _contextAccessor;
 
-	public CookieHandler(IServiceProvider serviceProvider, IConfiguration configuration)
+	public CookieHandler(IHttpContextAccessor contextAccessor, IConfiguration configuration, ILogger<CookieHandler> logger)
 	{
-		_serviceProvider = serviceProvider;
+		_contextAccessor = contextAccessor;
 		_configuration = configuration;
+		_logger = logger;
 	}
 
 	public bool TryGetCookie(out KeyValuePair<string, string> cookie)
@@ -25,7 +27,7 @@ public class CookieHandler
 		var cookieName = _configuration.GetValue<string>("Cookies:Access") ?? string.Empty;
 		cookie = new KeyValuePair<string, string>(cookieName, string.Empty);
 
-		var target = _serviceProvider.GetRequiredService<IHttpContextAccessor>()
+		var target = _contextAccessor
 			?.HttpContext
 			?.Request
 			?.Cookies
@@ -46,17 +48,19 @@ public class CookieHandler
 
 		foreach (var cookie in _configuration
 			         .GetSection("Cookies")
-			         .GetChildren())
+			         .GetChildren()
+			         .Select(c => c.Value))
 		{
 			try
 			{
 				httpResponse.Cookies.Delete(
-					cookie.Value!,
-					new CookieOptions { Expires = DateTime.Now.AddDays(-1), Path = cookiePath });
+					cookie!,
+					new CookieOptions { Domain = ".thekecha.com", Path = cookiePath });
 			}
-			catch
+			catch (Exception e)
 			{
 				// Swallow.
+				_logger.LogError(e, "Error while deleting cookie '{CookieName}'", cookie);
 			}
 		}
 	}
