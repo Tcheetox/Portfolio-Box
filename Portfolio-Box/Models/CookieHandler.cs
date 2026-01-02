@@ -48,9 +48,16 @@ public class CookieHandler
 			         .GetSection("Cookies")
 			         .GetChildren())
 		{
-			httpResponse.Cookies.Delete(
-				cookie.Value!,
-				new CookieOptions { Expires = DateTime.Now.AddDays(-1), Path = cookiePath });
+			try
+			{
+				httpResponse.Cookies.Delete(
+					cookie.Value!,
+					new CookieOptions { Expires = DateTime.Now.AddDays(-1), Path = cookiePath });
+			}
+			catch
+			{
+				// Swallow.
+			}
 		}
 	}
 }
